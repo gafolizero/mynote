@@ -15,9 +15,17 @@ const Login = () => {
         try {
             const response = await api.post('/auth/login', { email, password });
 
-            login(response.data.data.user, response.data.token);
+            const token = response.data.data.token;
+            const user = response.data.data.user;
+
+            if (!token) {
+                return toast.error("Server error: Token not received");
+            }
+
+            login(user, token);
 
             toast.success('Welcome back!');
+            navigate('/');
         } catch (error) {
             toast.error(error.response?.data?.message || 'Login failed');
         }
