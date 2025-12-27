@@ -6,6 +6,8 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./middleware/error.middleware');
 const authRoutes = require('./routes/auth.routes');
 const folderRoutes = require('./routes/folder.routes');
+const noteRoutes = require('./routes/note.routes');
+const tagRoutes =  require('./routes/tag.routes');
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.use(express.json());
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/folders', folderRoutes);
+app.use('/api/v1/notes', noteRoutes);
+app.use('/api/v1/tags', tagRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).json({ message: 'Note API is running' });
