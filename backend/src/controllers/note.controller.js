@@ -9,10 +9,11 @@ exports.createNote = async (req, res, next) => {
 
 exports.getAllNotes = async (req, res, next) => {
     try {
-        const { folderId, isPinned, isArchived, search, tagId, page, limit } = req.query;
+        const { folder_id, isPinned, isArchived, search, tagId, page, limit } = req.query;
+        console.log(req.query);
 
         const filters = {
-            folderId: folderId ? parseInt(folderId) : null,
+            folder_id: folder_id ? parseInt(folder_id) : null,
             tagId: tagId ? parseInt(tagId) : null,
             search: search || '',
             page: parseInt(page) || 1,
