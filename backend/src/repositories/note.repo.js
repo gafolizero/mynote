@@ -45,7 +45,7 @@ class NoteRepository {
         }
     }
 
-    async findAll(userId, { folder_id, isPinned, isArchived, search, tagId, page, limit }) {
+    async findAll(userId, { folder_id, isPinned, isArchived, search, tagId, page, limit, sortBy, sortOrder }) {
         const limitNum = parseInt(limit) || 10;
         const pageNum = parseInt(page) || 1;
         const offsetNum = (pageNum - 1) * limitNum;
@@ -90,7 +90,23 @@ class NoteRepository {
                 )`;
         }
 
-        query += ` GROUP BY n.id ORDER BY n.is_pinned DESC, n.updated_at DESC`;
+        query += ` GROUP BY n.id`;
+
+        let orderBy = 'n.is_pinned DESC';
+
+        const validSortFields = ['created_at', 'updated_at', 'title'];
+        const validSortOrders = ['ASC', 'DESC'];
+
+        const sortField = validSortFields.includes(sortBy) ? sortBy : 'updated_at';
+        const sortDir = validSortOrders.includes(sortOrder?.toUpperCase()) ? sortOrder.toUpperCase() : 'DESC';
+
+        if (sortField === 'title') {
+            orderBy += `, n.title ${sortDir}`;
+        } else {
+            orderBy += `, n.${sortField} ${sortDir}`;
+        }
+
+        query += ` ORDER BY ${orderBy}`;
 
         params.push(limitNum);
         query += ` LIMIT $${params.length}`;

@@ -15,7 +15,9 @@ exports.getAllNotes = async (req, res, next) => {
             search: req.query.search,
             page: req.query.page,
             limit: req.query.limit,
-            isArchived: req.query.isArchived
+            isArchived: req.query.isArchived,
+            sortBy: req.query.sortBy,
+            sortOrder: req.query.sortOrder
         });
 
         res.status(200).json({ status: 'success', data: { notes } });
