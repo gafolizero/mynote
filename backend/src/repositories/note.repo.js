@@ -51,22 +51,27 @@ class NoteRepository {
         const offsetNum = (pageNum - 1) * limitNum;
 
         let query = `
-SELECT n.*,
-json_agg(t.*) FILTER (WHERE t.id IS NOT NULL) AS tags
-FROM notes n
-LEFT JOIN note_tags nt ON n.id = nt.note_id
-LEFT JOIN tags t ON nt.tag_id = t.id
-WHERE n.user_id = $1
-`;
+            SELECT n.*,
+            json_agg(t.*) FILTER (WHERE t.id IS NOT NULL) AS tags
+            FROM notes n
+            LEFT JOIN note_tags nt ON n.id = nt.note_id
+            LEFT JOIN tags t ON nt.tag_id = t.id
+            WHERE n.user_id = $1
+            `;
 
         const params = [userId];
 
-        if (folder_id && folder_id !== 'null' && folder_id !== '') {
+        if (folder_id === 'null' || folder_id === 'unorganized') {
+            console.log("SQL ACTION: Filtering for UNORGANIZED (IS NULL)");
+            query += ` AND n.folder_id IS NULL`;
+        } else if (folder_id && folder_id !== 'undefined' && folder_id !== '') {
+            console.log(`SQL ACTION: Filtering for FOLDER ID: ${folder_id}`);
             params.push(folder_id);
             query += ` AND n.folder_id = $${params.length}`;
+        } else {
+            console.log("SQL ACTION: No folder filter (Showing ALL NOTES)");
         }
 
-        // Handle Booleans carefully (coming from URL strings)
         if (isPinned === true || isPinned === 'true') {
             params.push(true);
             query += ` AND n.is_pinned = $${params.length}`;
@@ -85,14 +90,13 @@ WHERE n.user_id = $1
         if (tagId) {
             params.push(tagId);
             query += ` AND EXISTS (
-SELECT 1 FROM note_tags nt2
-WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
-)`;
+                SELECT 1 FROM note_tags nt2
+                WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
+                )`;
         }
 
         query += ` GROUP BY n.id ORDER BY n.is_pinned DESC, n.updated_at DESC`;
 
-        // Pagination
         params.push(limitNum);
         query += ` LIMIT $${params.length}`;
 
@@ -100,7 +104,11 @@ WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
         query += ` OFFSET $${params.length}`;
 
         const { rows } = await pool.query(query, params);
-        return rows.map(row => ({ ...row, tags: row.tags || [] }));
+
+        return rows.map(row => ({
+            ...row,
+            tags: row.tags || []
+        }));
     }
     async findById(id, userId) {
         const query = `

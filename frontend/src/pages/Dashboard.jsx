@@ -1,3 +1,4 @@
+// Dashboard.jsx
 import { useState, useContext } from 'react';
 import Sidebar from '../components/Sidebar';
 import NoteList from '../components/NoteList';
@@ -19,19 +20,12 @@ const Dashboard = () => {
     const handleRefresh = () => {
         setIsCreating(false);
         setNoteToEdit(null);
-        setRefreshKey(prev => prev + 1);
-    };
-
-    const handleEditInitiated = (note) => {
-        setNoteToEdit(note);
-        setIsCreating(false);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setRefreshKey(prev => prev + 1); // Only increments when a note is saved/deleted
     };
 
     const handleFolderSelect = (id) => {
-        const nextFolderId = id === selectedFolderId ? null : id;
-        setSelectedFolderId(nextFolderId);
-        if (nextFolderId) setSelectedTagId(null);
+        setSelectedFolderId(id);
+        setSelectedTagId(null);
     };
 
     const handleTagSelect = (id) => {
@@ -42,7 +36,6 @@ const Dashboard = () => {
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif', background: '#fafafa' }}>
-
             <Sidebar
                 selectedFolderId={selectedFolderId}
                 onFolderSelect={handleFolderSelect}
@@ -60,33 +53,15 @@ const Dashboard = () => {
                             placeholder="Search notes..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '10px 10px 10px 40px',
-                                borderRadius: '8px',
-                                border: '1px solid #ddd',
-                                outline: 'none',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-                            }}
+                            style={{ width: '100%', padding: '10px 10px 10px 40px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none' }}
                         />
                     </div>
-
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                        <button
-                            onClick={() => { setIsCreating(true); setNoteToEdit(null); }}
-                            style={{
-                                background: '#3498db', color: 'white', border: 'none',
-                                padding: '10px 20px', borderRadius: '8px', cursor: 'pointer',
-                                display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '500'
-                            }}
-                        >
+                        <button onClick={() => { setIsCreating(true); setNoteToEdit(null); }} style={{ background: '#3498db', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '500' }}>
                             <Plus size={18}/> New Note
                         </button>
-                        <span style={{ fontWeight: '600', color: '#333' }}>{user?.username}</span>
-                        <button
-                            onClick={logout}
-                            style={{ color: '#e74c3c', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        >
+                        <span style={{ fontWeight: '600' }}>{user?.username}</span>
+                        <button onClick={logout} style={{ color: '#e74c3c', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
                             <LogOut size={18} /> Logout
                         </button>
                     </div>
@@ -100,12 +75,13 @@ const Dashboard = () => {
                     />
                 )}
 
+                {/* FIXED: We removed folderId and tagId from the key to stop the recreation loop */}
                 <NoteList
                     searchQuery={searchQuery}
                     folderId={selectedFolderId}
                     tagId={selectedTagId}
-                    key={`list-${refreshKey}-${selectedFolderId}-${selectedTagId}`}
-                    onEditNote={handleEditInitiated}
+                    key={refreshKey}
+                    onEditNote={(note) => { setNoteToEdit(note); setIsCreating(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 />
             </main>
         </div>
