@@ -1,4 +1,3 @@
-// Dashboard.jsx
 import { useState, useContext } from 'react';
 import Sidebar from '../components/Sidebar';
 import NoteList from '../components/NoteList';
@@ -20,7 +19,7 @@ const Dashboard = () => {
     const handleRefresh = () => {
         setIsCreating(false);
         setNoteToEdit(null);
-        setRefreshKey(prev => prev + 1); // Only increments when a note is saved/deleted
+        setRefreshKey(prev => prev + 1);
     };
 
     const handleFolderSelect = (id) => {
@@ -45,28 +44,82 @@ const Dashboard = () => {
             />
 
             <main style={{ flex: 1, padding: '30px' }}>
-                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                    <div style={{ position: 'relative', width: '350px' }}>
-                        <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: '#888' }} />
+                <header style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '30px',
+                    gap: '20px'
+                }}>
+
+                    <div style={{
+                        position: 'relative',
+                        flex: '1',
+                        minWidth: '200px',
+                        maxWidth: '450px'
+                    }}>
+                        <Search size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: '#888' }} />
                         <input
                             type="text"
                             placeholder="Search notes..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            style={{ width: '100%', padding: '10px 10px 10px 40px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none' }}
+                            style={{
+                                width: '90%',
+                                padding: '12px 12px 12px 40px',
+                                borderRadius: '10px',
+                                border: '1px solid #eee',
+                                outline: 'none',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+                                fontSize: '0.95rem'
+                            }}
                         />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                        <button onClick={() => { setIsCreating(true); setNoteToEdit(null); }} style={{ background: '#3498db', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '500' }}>
-                            <Plus size={18}/> New Note
+
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '15px',
+                        flexShrink: 0
+                    }}>
+                        <button
+                            onClick={() => { setIsCreating(true); setNoteToEdit(null); }}
+                            style={{
+                                background: '#3498db', color: 'white', border: 'none',
+                                padding: '10px 18px', borderRadius: '8px', cursor: 'pointer',
+                                display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600',
+                                fontSize: '0.9rem',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            <Plus size={18}/>
+                            <span className="hide-mobile">New Note</span>
                         </button>
-                        <span style={{ fontWeight: '600' }}>{user?.username}</span>
-                        <button onClick={logout} style={{ color: '#e74c3c', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                            <LogOut size={18} /> Logout
-                        </button>
+
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            borderLeft: '1px solid #eee',
+                            paddingLeft: '15px'
+                        }}>
+                            <span style={{ fontWeight: '600', color: '#333', fontSize: '0.9rem' }}>
+                                {user?.username}
+                            </span>
+                            <button
+                                onClick={logout}
+                                style={{
+                                    color: '#e74c3c', border: 'none', background: 'none',
+                                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px',
+                                    fontSize: '0.9rem', padding: '5px'
+                                }}
+                            >
+                                <LogOut size={18} />
+                            </button>
+                        </div>
                     </div>
                 </header>
-
                 {(isCreating || noteToEdit) && (
                     <CreateNote
                         noteToEdit={noteToEdit}
@@ -75,7 +128,6 @@ const Dashboard = () => {
                     />
                 )}
 
-                {/* FIXED: We removed folderId and tagId from the key to stop the recreation loop */}
                 <NoteList
                     searchQuery={searchQuery}
                     folderId={selectedFolderId}

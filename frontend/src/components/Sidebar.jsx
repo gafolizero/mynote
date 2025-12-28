@@ -38,7 +38,6 @@ const Sidebar = ({ selectedFolderId, onFolderSelect, selectedTagId, onTagSelect,
 
     return (
         <aside style={{ width: '280px', background: '#fff', borderRight: '1px solid #eee', padding: '25px 15px' }}>
-            {/* Global Views Section */}
             <div style={{ marginBottom: '25px' }}>
                 <button onClick={() => onFolderSelect(null)} style={btnStyle(selectedFolderId === null)}>
                     <LayoutGrid size={18} /> All Notes
