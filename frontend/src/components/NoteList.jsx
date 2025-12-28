@@ -17,10 +17,18 @@ const NoteList = ({ searchQuery, folderId, tagId, isArchived, onEditNote }) => {
             params.append('page', page);
             params.append('limit', limit);
             params.append('isArchived', isArchived ? 'true' : 'false');
+
+            if (tagId) {
+                params.append('tagId', tagId);
+            }
+
             if (searchQuery) params.append('search', searchQuery);
-            if (tagId) params.append('tagId', tagId);
-            if (folderId === 'unorganized') params.append('folder_id', 'null');
-                else if (folderId) params.append('folder_id', folderId);
+
+            if (folderId === 'unorganized') {
+                params.append('folder_id', 'null');
+            } else if (folderId) {
+                params.append('folder_id', folderId);
+            }
 
             const response = await api.get(`/notes?${params.toString()}`);
             setNotes(response.data.data.notes || []);
