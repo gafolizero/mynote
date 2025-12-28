@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -15,6 +16,7 @@ function App() {
             <Toaster position="top-right" />
             <Routes>
                 <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+                <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
 
                 <Route path="/" element={ <ProtectedRoute> <Dashboard /> </ProtectedRoute> } />
 
