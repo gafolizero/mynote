@@ -1,8 +1,10 @@
 import React from 'react';
 import api from '../services/api';
-import { Trash2, Edit, Pin, Hash } from 'lucide-react';
+import { Trash2, Edit, Pin, Hash, Archive, RotateCcw } from 'lucide-react';
 
 const NoteCard = ({ note, onRefresh, onEdit }) => {
+
+    if (!note) return null;
 
     const togglePin = async (e) => {
         e.stopPropagation();
@@ -16,9 +18,26 @@ const NoteCard = ({ note, onRefresh, onEdit }) => {
         }
     };
 
+    const handleToggleArchive = async (e) => {
+        e.stopPropagation();
+        try {
+            await api.patch(`/notes/${note.id}`, {
+                is_archived: !note.is_archived
+            });
+            onRefresh();
+        } catch (err) {
+            console.error('Error changing archive status:', err);
+        }
+    };
+
     const handleDelete = async (e) => {
         e.stopPropagation();
-        if (!window.confirm('Delete this note?')) return;
+        const confirmMsg = note.is_archived
+            ? 'Permanently delete this archived note?'
+            : 'Move this note to trash?';
+
+        if (!window.confirm(confirmMsg)) return;
+
         try {
             await api.delete(`/notes/${note.id}`);
             onRefresh();
@@ -43,7 +62,8 @@ const NoteCard = ({ note, onRefresh, onEdit }) => {
                 justifyContent: 'space-between',
                 transition: 'all 0.2s ease',
                 cursor: 'pointer',
-                position: 'relative'
+                position: 'relative',
+                opacity: note.is_archived ? 0.85 : 1
             }}
             onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
@@ -54,44 +74,25 @@ const NoteCard = ({ note, onRefresh, onEdit }) => {
                 e.currentTarget.style.boxShadow = note.is_pinned
                     ? '0 4px 12px rgba(52, 152, 219, 0.1)'
                     : '0 2px 8px rgba(0,0,0,0.02)';
-            }}
-        >
+            }} >
             <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-                    <h3 style={{
-                        margin: 0,
-                        fontSize: '1.1rem',
-                        fontWeight: '600',
-                        color: '#333',
-                        maxWidth: '85%'
-                    }}>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '600', color: '#333', maxWidth: '80%' }}>
                         {note.title}
                     </h3>
 
-                    <button
-                        onClick={togglePin}
-                        title={note.is_pinned ? "Unpin note" : "Pin note"}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            padding: '4px',
-                            borderRadius: '50%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            transition: 'background 0.2s'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = '#f0f7ff'}
-                        onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                    >
-                        <Pin
-                            size={18}
-                            fill={note.is_pinned ? "#3498db" : "none"}
-                            color={note.is_pinned ? "#3498db" : "#ccc"}
-                            style={{ transition: 'all 0.2s' }}
-                        />
-                    </button>
+                    {!note.is_archived && (
+                        <button
+                            onClick={togglePin}
+                            title={note.is_pinned ? "Unpin note" : "Pin note"}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }} >
+                            <Pin
+                                size={18}
+                                fill={note.is_pinned ? "#3498db" : "none"}
+                                color={note.is_pinned ? "#3498db" : "#ccc"}
+                            />
+                        </button>
+                    )}
                 </div>
 
                 <p style={{
@@ -112,16 +113,9 @@ const NoteCard = ({ note, onRefresh, onEdit }) => {
                         <span
                             key={tag.id}
                             style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                background: '#f0f7ff',
-                                color: '#3498db',
-                                fontSize: '0.7rem',
-                                fontWeight: '600',
-                                padding: '3px 10px',
-                                borderRadius: '12px',
-                                border: '1px solid #e1effe'
+                                display: 'inline-flex', alignItems: 'center', gap: '4px',
+                                background: '#f0f7ff', color: '#3498db', fontSize: '0.7rem',
+                                fontWeight: '600', padding: '3px 10px', borderRadius: '12px', border: '1px solid #e1effe'
                             }}
                         >
                             <Hash size={10} style={{ opacity: 0.7 }} />
@@ -131,17 +125,30 @@ const NoteCard = ({ note, onRefresh, onEdit }) => {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
+
+                <button
+                    onClick={handleToggleArchive}
+                    title={note.is_archived ? "Restore Note" : "Archive Note"}
+                    style={{
+                        background: 'none', border: 'none',
+                        color: note.is_archived ? '#2ecc71' : '#999',
+                        cursor: 'pointer', display: 'flex', alignItems: 'center'
+                    }} >
+                    {note.is_archived ? <RotateCcw size={16} /> : <Archive size={16} />}
+                </button>
+
                 <button
                     onClick={(e) => { e.stopPropagation(); onEdit(note); }}
-                    style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '5px' }}
-                >
+                    title="Edit Note"
+                    style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', display: 'flex', alignItems: 'center' }} >
                     <Edit size={16} />
                 </button>
+
                 <button
                     onClick={handleDelete}
-                    style={{ background: 'none', border: 'none', color: '#ff7675', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '5px' }}
-                >
+                    title="Delete Note"
+                    style={{ background: 'none', border: 'none', color: '#ff7675', cursor: 'pointer', display: 'flex', alignItems: 'center' }} >
                     <Trash2 size={16} />
                 </button>
             </div>

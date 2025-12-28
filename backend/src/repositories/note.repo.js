@@ -61,25 +61,20 @@ class NoteRepository {
 
         const params = [userId];
 
+        const archiveStatus = (isArchived === 'true' || isArchived === true);
+        params.push(archiveStatus);
+        query += ` AND n.is_archived = $${params.length}`;
+
         if (folder_id === 'null' || folder_id === 'unorganized') {
-            console.log("SQL ACTION: Filtering for UNORGANIZED (IS NULL)");
             query += ` AND n.folder_id IS NULL`;
         } else if (folder_id && folder_id !== 'undefined' && folder_id !== '') {
-            console.log(`SQL ACTION: Filtering for FOLDER ID: ${folder_id}`);
             params.push(folder_id);
             query += ` AND n.folder_id = $${params.length}`;
-        } else {
-            console.log("SQL ACTION: No folder filter (Showing ALL NOTES)");
         }
 
         if (isPinned === true || isPinned === 'true') {
             params.push(true);
             query += ` AND n.is_pinned = $${params.length}`;
-        }
-
-        if (isArchived === true || isArchived === 'true') {
-            params.push(true);
-            query += ` AND n.is_archived = $${params.length}`;
         }
 
         if (search) {
@@ -110,6 +105,7 @@ class NoteRepository {
             tags: row.tags || []
         }));
     }
+
     async findById(id, userId) {
         const query = `
             SELECT n.*,
@@ -149,11 +145,11 @@ class NoteRepository {
 
             if (fields.length > 0) {
                 const updateQuery = `
-UPDATE notes
-SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP
-WHERE id = $1 AND user_id = $2
-RETURNING *
-`;
+                    UPDATE notes
+                    SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP
+                    WHERE id = $1 AND user_id = $2
+                    RETURNING *
+                    `;
                 const { rows } = await client.query(updateQuery, params);
                 updatedNote = rows[0];
             } else {
@@ -186,7 +182,6 @@ RETURNING *
 
         } catch (error) {
             await client.query('ROLLBACK');
-            console.error("SQL ERROR details:", error.message);
             throw error;
         } finally {
             client.release();
