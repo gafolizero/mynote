@@ -10,6 +10,7 @@ const Dashboard = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedFolderId, setSelectedFolderId] = useState(null);
+    const [selectedTagId, setSelectedTagId] = useState(null);
 
     const [isCreating, setIsCreating] = useState(false);
     const [noteToEdit, setNoteToEdit] = useState(null);
@@ -27,18 +28,31 @@ const Dashboard = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const handleFolderSelect = (id) => {
+        const nextFolderId = id === selectedFolderId ? null : id;
+        setSelectedFolderId(nextFolderId);
+        if (nextFolderId) setSelectedTagId(null);
+    };
+
+    const handleTagSelect = (id) => {
+        const nextTagId = id === selectedTagId ? null : id;
+        setSelectedTagId(nextTagId);
+        if (nextTagId) setSelectedFolderId(null);
+    };
+
     return (
         <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif', background: '#fafafa' }}>
 
             <Sidebar
                 selectedFolderId={selectedFolderId}
-                onFolderSelect={setSelectedFolderId}
+                onFolderSelect={handleFolderSelect}
+                selectedTagId={selectedTagId}
+                onTagSelect={handleTagSelect}
                 refreshTrigger={refreshKey}
             />
 
             <main style={{ flex: 1, padding: '30px' }}>
                 <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-
                     <div style={{ position: 'relative', width: '350px' }}>
                         <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: '#888' }} />
                         <input
@@ -89,7 +103,8 @@ const Dashboard = () => {
                 <NoteList
                     searchQuery={searchQuery}
                     folderId={selectedFolderId}
-                    key={`list-${refreshKey}-${selectedFolderId}`}
+                    tagId={selectedTagId}
+                    key={`list-${refreshKey}-${selectedFolderId}-${selectedTagId}`}
                     onEditNote={handleEditInitiated}
                 />
             </main>
