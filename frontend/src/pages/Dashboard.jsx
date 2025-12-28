@@ -10,6 +10,8 @@ const Dashboard = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedFolderId, setSelectedFolderId] = useState(null);
+    const [selectedTagId, setSelectedTagId] = useState(null);
+    const [showArchived, setShowArchived] = useState(false);
 
     const [isCreating, setIsCreating] = useState(false);
     const [noteToEdit, setNoteToEdit] = useState(null);
@@ -21,59 +23,51 @@ const Dashboard = () => {
         setRefreshKey(prev => prev + 1);
     };
 
-    const handleEditInitiated = (note) => {
-        setNoteToEdit(note);
-        setIsCreating(false);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    const handleFolderSelect = (id) => {
+        setSelectedFolderId(id);
+        setSelectedTagId(null);
+        setShowArchived(false);
+    };
+
+    const handleToggleArchive = (val) => {
+        setShowArchived(val);
+        if (val) {
+            setSelectedFolderId(null);
+            setSelectedTagId(null);
+        }
     };
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'sans-serif', background: '#fafafa' }}>
-
             <Sidebar
                 selectedFolderId={selectedFolderId}
-                onFolderSelect={setSelectedFolderId}
+                onFolderSelect={handleFolderSelect}
+                selectedTagId={selectedTagId}
+                onTagSelect={(id) => { setSelectedTagId(id); setShowArchived(false); }}
+                showArchived={showArchived}
+                onToggleArchive={handleToggleArchive}
                 refreshTrigger={refreshKey}
             />
 
             <main style={{ flex: 1, padding: '30px' }}>
-                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-
-                    <div style={{ position: 'relative', width: '350px' }}>
-                        <Search size={18} style={{ position: 'absolute', left: '12px', top: '10px', color: '#888' }} />
+                <header style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', gap: '20px' }}>
+                    <div style={{ position: 'relative', flex: '1', minWidth: '200px', maxWidth: '450px' }}>
+                        <Search size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: '#888' }} />
                         <input
                             type="text"
                             placeholder="Search notes..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '10px 10px 10px 40px',
-                                borderRadius: '8px',
-                                border: '1px solid #ddd',
-                                outline: 'none',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-                            }}
+                            style={{ width: '100%', padding: '12px 12px 12px 40px', borderRadius: '10px', border: '1px solid #eee', outline: 'none' }}
                         />
                     </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                        <button
-                            onClick={() => { setIsCreating(true); setNoteToEdit(null); }}
-                            style={{
-                                background: '#3498db', color: 'white', border: 'none',
-                                padding: '10px 20px', borderRadius: '8px', cursor: 'pointer',
-                                display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '500'
-                            }}
-                        >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <button onClick={() => { setIsCreating(true); setNoteToEdit(null); }} style={{ background: '#3498db', color: 'white', border: 'none', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}>
                             <Plus size={18}/> New Note
                         </button>
                         <span style={{ fontWeight: '600', color: '#333' }}>{user?.username}</span>
-                        <button
-                            onClick={logout}
-                            style={{ color: '#e74c3c', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
-                        >
-                            <LogOut size={18} /> Logout
+                        <button onClick={logout} style={{ color: '#e74c3c', border: 'none', background: 'none', cursor: 'pointer' }}>
+                            <LogOut size={18} />
                         </button>
                     </div>
                 </header>
@@ -89,8 +83,10 @@ const Dashboard = () => {
                 <NoteList
                     searchQuery={searchQuery}
                     folderId={selectedFolderId}
-                    key={`list-${refreshKey}-${selectedFolderId}`}
-                    onEditNote={handleEditInitiated}
+                    tagId={selectedTagId}
+                    isArchived={showArchived}
+                    key={refreshKey}
+                    onEditNote={(note) => { setNoteToEdit(note); setIsCreating(false); }}
                 />
             </main>
         </div>

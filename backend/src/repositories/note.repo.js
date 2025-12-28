@@ -51,30 +51,30 @@ class NoteRepository {
         const offsetNum = (pageNum - 1) * limitNum;
 
         let query = `
-SELECT n.*,
-json_agg(t.*) FILTER (WHERE t.id IS NOT NULL) AS tags
-FROM notes n
-LEFT JOIN note_tags nt ON n.id = nt.note_id
-LEFT JOIN tags t ON nt.tag_id = t.id
-WHERE n.user_id = $1
-`;
+            SELECT n.*,
+            json_agg(t.*) FILTER (WHERE t.id IS NOT NULL) AS tags
+            FROM notes n
+            LEFT JOIN note_tags nt ON n.id = nt.note_id
+            LEFT JOIN tags t ON nt.tag_id = t.id
+            WHERE n.user_id = $1
+            `;
 
         const params = [userId];
 
-        if (folder_id && folder_id !== 'null' && folder_id !== '') {
+        const archiveStatus = (isArchived === 'true' || isArchived === true);
+        params.push(archiveStatus);
+        query += ` AND n.is_archived = $${params.length}`;
+
+        if (folder_id === 'null' || folder_id === 'unorganized') {
+            query += ` AND n.folder_id IS NULL`;
+        } else if (folder_id && folder_id !== 'undefined' && folder_id !== '') {
             params.push(folder_id);
             query += ` AND n.folder_id = $${params.length}`;
         }
 
-        // Handle Booleans carefully (coming from URL strings)
         if (isPinned === true || isPinned === 'true') {
             params.push(true);
             query += ` AND n.is_pinned = $${params.length}`;
-        }
-
-        if (isArchived === true || isArchived === 'true') {
-            params.push(true);
-            query += ` AND n.is_archived = $${params.length}`;
         }
 
         if (search) {
@@ -85,14 +85,13 @@ WHERE n.user_id = $1
         if (tagId) {
             params.push(tagId);
             query += ` AND EXISTS (
-SELECT 1 FROM note_tags nt2
-WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
-)`;
+                SELECT 1 FROM note_tags nt2
+                WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
+                )`;
         }
 
         query += ` GROUP BY n.id ORDER BY n.is_pinned DESC, n.updated_at DESC`;
 
-        // Pagination
         params.push(limitNum);
         query += ` LIMIT $${params.length}`;
 
@@ -100,8 +99,13 @@ WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
         query += ` OFFSET $${params.length}`;
 
         const { rows } = await pool.query(query, params);
-        return rows.map(row => ({ ...row, tags: row.tags || [] }));
+
+        return rows.map(row => ({
+            ...row,
+            tags: row.tags || []
+        }));
     }
+
     async findById(id, userId) {
         const query = `
             SELECT n.*,
@@ -123,15 +127,20 @@ WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
         try {
             await client.query('BEGIN');
 
-            let updatedNote = null;
+            const noteId = parseInt(id);
+            const ownerId = parseInt(userId);
 
+            let updatedNote = null;
             const fields = [];
-            const params = [id, userId];
+            const params = [noteId, ownerId];
             let index = 3;
 
+            const allowedColumns = ['title', 'content', 'folder_id', 'is_pinned', 'is_archived'];
             for (const [key, value] of Object.entries(noteData)) {
-                fields.push(`${key} = $${index++}`);
-                params.push(value);
+                if (allowedColumns.includes(key)) {
+                    fields.push(`${key} = $${index++}`);
+                    params.push(value);
+                }
             }
 
             if (fields.length > 0) {
@@ -144,7 +153,10 @@ WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
                 const { rows } = await client.query(updateQuery, params);
                 updatedNote = rows[0];
             } else {
-                const { rows } = await client.query('SELECT * FROM notes WHERE id = $1 AND user_id = $2', [id, userId]);
+                const { rows } = await client.query(
+                    'SELECT * FROM notes WHERE id = $1 AND user_id = $2',
+                    [noteId, ownerId]
+                );
                 updatedNote = rows[0];
             }
 
@@ -153,17 +165,15 @@ WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
                 return null;
             }
 
-            if (tagIds !== undefined) {
-                await client.query('DELETE FROM note_tags WHERE note_id = $1', [id]);
-
+            if (tagIds !== undefined && Array.isArray(tagIds)) {
+                await client.query('DELETE FROM note_tags WHERE note_id = $1', [noteId]);
                 if (tagIds.length > 0) {
-                    const insertTagQueries = tagIds.map(tagId => {
-                        return client.query(
+                    for (const tId of tagIds) {
+                        await client.query(
                             'INSERT INTO note_tags (note_id, tag_id) VALUES ($1, $2)',
-                            [id, tagId]
+                            [noteId, tId]
                         );
-                    });
-                    await Promise.all(insertTagQueries);
+                    }
                 }
             }
 
@@ -177,6 +187,7 @@ WHERE nt2.note_id = n.id AND nt2.tag_id = $${params.length}
             client.release();
         }
     }
+
     async delete(id, userId) {
         const query = 'DELETE FROM notes WHERE id = $1 AND user_id = $2';
         const { rowCount } = await pool.query(query, [id, userId]);
