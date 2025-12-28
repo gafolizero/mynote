@@ -9,9 +9,8 @@ exports.createNote = async (req, res, next) => {
 
 exports.getAllNotes = async (req, res, next) => {
     try {
-        // IMPORTANT: Check that we are pulling folder_id from query!
         const notes = await noteService.getAllNotes(req.user.id, {
-            folder_id: req.query.folder_id, // MUST MATCH THE KEY IN NOTELIST
+            folder_id: req.query.folder_id,
             tagId: req.query.tagId,
             search: req.query.search,
             page: req.query.page,

@@ -131,28 +131,36 @@ class NoteRepository {
         try {
             await client.query('BEGIN');
 
-            let updatedNote = null;
+            const noteId = parseInt(id);
+            const ownerId = parseInt(userId);
 
+            let updatedNote = null;
             const fields = [];
-            const params = [id, userId];
+            const params = [noteId, ownerId];
             let index = 3;
 
+            const allowedColumns = ['title', 'content', 'folder_id', 'is_pinned', 'is_archived'];
             for (const [key, value] of Object.entries(noteData)) {
-                fields.push(`${key} = $${index++}`);
-                params.push(value);
+                if (allowedColumns.includes(key)) {
+                    fields.push(`${key} = $${index++}`);
+                    params.push(value);
+                }
             }
 
             if (fields.length > 0) {
                 const updateQuery = `
-                    UPDATE notes
-                    SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP
-                    WHERE id = $1 AND user_id = $2
-                    RETURNING *
-                    `;
+UPDATE notes
+SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP
+WHERE id = $1 AND user_id = $2
+RETURNING *
+`;
                 const { rows } = await client.query(updateQuery, params);
                 updatedNote = rows[0];
             } else {
-                const { rows } = await client.query('SELECT * FROM notes WHERE id = $1 AND user_id = $2', [id, userId]);
+                const { rows } = await client.query(
+                    'SELECT * FROM notes WHERE id = $1 AND user_id = $2',
+                    [noteId, ownerId]
+                );
                 updatedNote = rows[0];
             }
 
@@ -161,17 +169,15 @@ class NoteRepository {
                 return null;
             }
 
-            if (tagIds !== undefined) {
-                await client.query('DELETE FROM note_tags WHERE note_id = $1', [id]);
-
+            if (tagIds !== undefined && Array.isArray(tagIds)) {
+                await client.query('DELETE FROM note_tags WHERE note_id = $1', [noteId]);
                 if (tagIds.length > 0) {
-                    const insertTagQueries = tagIds.map(tagId => {
-                        return client.query(
+                    for (const tId of tagIds) {
+                        await client.query(
                             'INSERT INTO note_tags (note_id, tag_id) VALUES ($1, $2)',
-                            [id, tagId]
+                            [noteId, tId]
                         );
-                    });
-                    await Promise.all(insertTagQueries);
+                    }
                 }
             }
 
@@ -180,11 +186,13 @@ class NoteRepository {
 
         } catch (error) {
             await client.query('ROLLBACK');
+            console.error("SQL ERROR details:", error.message);
             throw error;
         } finally {
             client.release();
         }
     }
+
     async delete(id, userId) {
         const query = 'DELETE FROM notes WHERE id = $1 AND user_id = $2';
         const { rowCount } = await pool.query(query, [id, userId]);
