@@ -17,7 +17,12 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('combined'));
 }
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 app.use('/api/v1/auth', authRoutes);
