@@ -81,7 +81,47 @@ const Sidebar = ({
             flexDirection: 'column',
             overflow: 'hidden'
         }}>
-            <div 
+            <div style={{
+                padding: '20px 15px',
+                borderBottom: '1px solid #f1f5f9',
+                flexShrink: 0,
+                background: '#fff'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                }}>
+                    <div style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '8px',
+                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff',
+                        fontWeight: '700',
+                        fontSize: '18px',
+                        boxShadow: '0 2px 8px rgba(99, 102, 241, 0.3)'
+                    }}>
+                        N
+                    </div>
+                    <span style={{
+                        fontSize: '20px',
+                        fontWeight: '700',
+                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        letterSpacing: '-0.5px'
+                    }}>
+                        myNote
+                    </span>
+                </div>
+            </div>
+
+            <div
                 className="custom-scrollbar"
                 style={{
                     display: 'flex',

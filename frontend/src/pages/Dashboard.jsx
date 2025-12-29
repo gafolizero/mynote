@@ -48,7 +48,6 @@ const Dashboard = () => {
 
             <main className="custom-scrollbar" style={styles.mainContent}>
                 <header style={styles.header}>
-                    {/* Search Section */}
                     <div style={styles.searchWrapper}>
                         <Search size={18} style={styles.searchIcon} />
                         <input
@@ -60,9 +59,7 @@ const Dashboard = () => {
                         />
                     </div>
 
-                    {/* Actions Section */}
                     <div style={styles.headerActions}>
-                        {/* Sort Widget */}
                         <div style={styles.sortContainer}>
                             <div style={styles.iconWrapper}>
                                 <ArrowUpDown size={14} color="#6366f1" strokeWidth={2.5} />
@@ -93,7 +90,6 @@ const Dashboard = () => {
                             </button>
                         </div>
 
-                        {/* New Note Button */}
                         <button
                             onClick={() => { setIsCreating(true); setNoteToEdit(null); }}
                             style={styles.newNoteBtn}
@@ -101,7 +97,6 @@ const Dashboard = () => {
                             <Plus size={18}/> <span style={{ whiteSpace: 'nowrap' }}>New Note</span>
                         </button>
 
-                        {/* User Profile & Logout */}
                         <div style={styles.userSection}>
                             <div style={styles.avatar}>
                                 {user?.username?.charAt(0).toUpperCase()}
@@ -136,7 +131,6 @@ const Dashboard = () => {
     );
 };
 
-// Modern Style Object
 const styles = {
     dashboardLayout: {
         display: 'flex',
@@ -200,15 +194,15 @@ const styles = {
         minWidth: 'fit-content',
         transition: 'all 0.2s ease'
     },
-    iconWrapper: { 
+    iconWrapper: {
         padding: '6px 8px 6px 10px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
     },
-    selectWrapper: { 
-        position: 'relative', 
-        display: 'flex', 
+    selectWrapper: {
+        position: 'relative',
+        display: 'flex',
         alignItems: 'center',
         minWidth: '100px'
     },
@@ -227,18 +221,18 @@ const styles = {
         minWidth: '100px',
         width: '100%'
     },
-    chevron: { 
-        position: 'absolute', 
-        right: '8px', 
-        pointerEvents: 'none', 
+    chevron: {
+        position: 'absolute',
+        right: '8px',
+        pointerEvents: 'none',
         color: '#94a3b8',
         top: '50%',
         transform: 'translateY(-50%)'
     },
-    separator: { 
-        width: '1px', 
-        height: '20px', 
-        background: '#e2e8f0', 
+    separator: {
+        width: '1px',
+        height: '20px',
+        background: '#e2e8f0',
         margin: '0 4px',
         flexShrink: 0
     },
