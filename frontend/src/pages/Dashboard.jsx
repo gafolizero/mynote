@@ -46,7 +46,7 @@ const Dashboard = () => {
                 refreshTrigger={refreshKey}
             />
 
-            <main style={styles.mainContent}>
+            <main className="custom-scrollbar" style={styles.mainContent}>
                 <header style={styles.header}>
                     {/* Search Section */}
                     <div style={styles.searchWrapper}>
@@ -136,14 +136,16 @@ const Dashboard = () => {
 const styles = {
     dashboardLayout: {
         display: 'flex',
-        minHeight: '100vh',
+        height: '100vh',
         fontFamily: "'Inter', sans-serif",
-        background: '#f8fafc'
+        background: '#f8fafc',
+        overflow: 'hidden'
     },
     mainContent: {
         flex: 1,
-        padding: '32px',
-        overflowY: 'auto'
+        padding: '32px 32px 100px 32px',
+        overflowY: 'auto',
+        height: '100vh'
     },
     header: {
         display: 'flex',
