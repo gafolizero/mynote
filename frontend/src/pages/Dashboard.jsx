@@ -72,6 +72,8 @@ const Dashboard = () => {
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
                                     style={styles.select}
+                                    onFocus={(e) => e.currentTarget.parentElement.parentElement.style.boxShadow = '0 2px 8px rgba(99, 102, 241, 0.15)'}
+                                    onBlur={(e) => e.currentTarget.parentElement.parentElement.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)'}
                                 >
                                     <option value="updated_at">Modified</option>
                                     <option value="created_at">Created</option>
@@ -84,6 +86,8 @@ const Dashboard = () => {
                                 onClick={() => setSortOrder(sortOrder === 'ASC' ? 'DESC' : 'ASC')}
                                 style={styles.toggleButton}
                                 title="Toggle Sort Order"
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                             >
                                 {sortOrder === 'ASC' ? <SortAsc size={18} /> : <SortDesc size={18} />}
                             </button>
@@ -94,7 +98,7 @@ const Dashboard = () => {
                             onClick={() => { setIsCreating(true); setNoteToEdit(null); }}
                             style={styles.newNoteBtn}
                         >
-                            <Plus size={18}/> <span>New Note</span>
+                            <Plus size={18}/> <span style={{ whiteSpace: 'nowrap' }}>New Note</span>
                         </button>
 
                         {/* User Profile & Logout */}
@@ -149,14 +153,16 @@ const styles = {
     },
     header: {
         display: 'flex',
+        flexWrap: 'wrap',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: '32px',
-        gap: '24px'
+        gap: '16px'
     },
     searchWrapper: {
         position: 'relative',
         flex: '1',
+        minWidth: '200px',
         maxWidth: '400px'
     },
     searchIcon: {
@@ -180,7 +186,8 @@ const styles = {
     headerActions: {
         display: 'flex',
         alignItems: 'center',
-        gap: '16px'
+        gap: '12px',
+        flexWrap: 'wrap'
     },
     sortContainer: {
         display: 'flex',
@@ -188,51 +195,90 @@ const styles = {
         background: '#fff',
         borderRadius: '10px',
         border: '1px solid #e2e8f0',
-        padding: '2px',
-        boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+        padding: '4px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+        minWidth: 'fit-content',
+        transition: 'all 0.2s ease'
     },
-    iconWrapper: { padding: '0 8px 0 10px' },
-    selectWrapper: { position: 'relative', display: 'flex', alignItems: 'center' },
+    iconWrapper: { 
+        padding: '6px 8px 6px 10px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    selectWrapper: { 
+        position: 'relative', 
+        display: 'flex', 
+        alignItems: 'center',
+        minWidth: '100px'
+    },
     select: {
         appearance: 'none',
-        padding: '8px 24px 8px 4px',
+        WebkitAppearance: 'none',
+        MozAppearance: 'none',
+        padding: '6px 28px 6px 8px',
         border: 'none',
         outline: 'none',
         background: 'transparent',
         cursor: 'pointer',
         fontSize: '13px',
         fontWeight: '600',
-        color: '#475569'
+        color: '#475569',
+        minWidth: '100px',
+        width: '100%'
     },
-    chevron: { position: 'absolute', right: '4px', pointerEvents: 'none', color: '#94a3b8' },
-    separator: { width: '1px', height: '18px', background: '#e2e8f0', margin: '0 4px' },
+    chevron: { 
+        position: 'absolute', 
+        right: '8px', 
+        pointerEvents: 'none', 
+        color: '#94a3b8',
+        top: '50%',
+        transform: 'translateY(-50%)'
+    },
+    separator: { 
+        width: '1px', 
+        height: '20px', 
+        background: '#e2e8f0', 
+        margin: '0 4px',
+        flexShrink: 0
+    },
     toggleButton: {
         display: 'flex',
-        padding: '8px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '6px 8px',
         border: 'none',
         background: 'transparent',
         cursor: 'pointer',
-        color: '#6366f1'
+        color: '#6366f1',
+        borderRadius: '6px',
+        transition: 'background-color 0.2s ease',
+        minWidth: '32px',
+        height: '32px'
     },
     newNoteBtn: {
         background: '#6366f1',
         color: 'white',
         border: 'none',
-        padding: '10px 20px',
+        padding: '10px 16px',
         borderRadius: '10px',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
         fontWeight: '600',
-        boxShadow: '0 4px 6px -1px rgba(99, 102, 241, 0.2)'
+        boxShadow: '0 4px 6px -1px rgba(99, 102, 241, 0.2)',
+        transition: 'all 0.2s ease',
+        whiteSpace: 'nowrap',
+        flexShrink: 0
     },
     userSection: {
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
         paddingLeft: '8px',
-        borderLeft: '1px solid #e2e8f0'
+        borderLeft: '1px solid #e2e8f0',
+        flexShrink: 0
     },
     avatar: {
         width: '36px',

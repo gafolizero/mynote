@@ -16,8 +16,23 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
     useEffect(() => {
         fetchFolders();
         fetchAllTags();
-        if (noteToEdit && noteToEdit.tags) {
-            setSelectedTagIds(noteToEdit.tags.map(t => t.id));
+    }, []);
+
+    useEffect(() => {
+        if (noteToEdit) {
+            setTitle(noteToEdit.title || '');
+            setContent(noteToEdit.content || '');
+            setFolderId(noteToEdit.folder_id || '');
+            if (noteToEdit.tags) {
+                setSelectedTagIds(noteToEdit.tags.map(t => t.id));
+            } else {
+                setSelectedTagIds([]);
+            }
+        } else {
+            setTitle('');
+            setContent('');
+            setFolderId('');
+            setSelectedTagIds([]);
         }
     }, [noteToEdit]);
 
