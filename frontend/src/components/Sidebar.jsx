@@ -66,16 +66,16 @@ const Sidebar = ({
     const btnStyle = (isActive) => ({
         display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '10px 15px',
         border: 'none', borderRadius: '8px', cursor: 'pointer', textAlign: 'left',
-        background: isActive ? '#3498db15' : 'transparent',
-        color: isActive ? '#3498db' : '#555',
+        background: isActive ? '#DCD6F7' : 'transparent',
+        color: isActive ? '#424874' : '#8B96C7',
         fontWeight: isActive ? '600' : '400', transition: 'all 0.2s', marginBottom: '4px'
     });
 
     return (
         <aside style={{
             width: '280px',
-            background: '#fff',
-            borderRight: '1px solid #eee',
+            background: '#F4EEFF',
+            borderRight: '1px solid #DCD6F7',
             height: '100vh',
             display: 'flex',
             flexDirection: 'column',
@@ -83,9 +83,9 @@ const Sidebar = ({
         }}>
             <div style={{
                 padding: '20px 15px',
-                borderBottom: '1px solid #f1f5f9',
+                borderBottom: '1px solid #DCD6F7',
                 flexShrink: 0,
-                background: '#fff'
+                background: '#F4EEFF'
             }}>
                 <div style={{
                     display: 'flex',
@@ -96,24 +96,21 @@ const Sidebar = ({
                         width: '36px',
                         height: '36px',
                         borderRadius: '8px',
-                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                        background: '#424874',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#fff',
+                        color: '#F4EEFF',
                         fontWeight: '700',
                         fontSize: '18px',
-                        boxShadow: '0 2px 8px rgba(99, 102, 241, 0.3)'
+                        boxShadow: '0 2px 8px rgba(66, 72, 116, 0.3)'
                     }}>
                         N
                     </div>
                     <span style={{
                         fontSize: '20px',
                         fontWeight: '700',
-                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
+                        color: '#424874',
                         letterSpacing: '-0.5px'
                     }}>
                         myNote
@@ -155,8 +152,8 @@ const Sidebar = ({
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', padding: '0 10px', flexShrink: 0 }}>
-                    <h3 style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#bbb', textTransform: 'uppercase', letterSpacing: '1px' }}>Folders</h3>
-                    <button onClick={() => setIsCreating(!isCreating)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>
+                    <h3 style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#8B96C7', textTransform: 'uppercase', letterSpacing: '1px' }}>Folders</h3>
+                    <button onClick={() => setIsCreating(!isCreating)} style={{ background: 'none', border: 'none', color: '#8B96C7', cursor: 'pointer' }}>
                         {isCreating ? <X size={14}/> : <Plus size={14}/>}
                     </button>
                 </div>
@@ -164,7 +161,7 @@ const Sidebar = ({
                 {isCreating && (
                     <form onSubmit={handleCreateFolder} style={{ marginBottom: '15px', padding: '0 10px', flexShrink: 0 }}>
                         <input autoFocus placeholder="Folder name..." value={newFolderName} onChange={(e) => setNewFolderName(e.target.value)}
-                            style={{ width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '0.9rem' }} />
+                            style={{ width: '100%', padding: '8px', border: '1px solid #DCD6F7', borderRadius: '6px', fontSize: '0.9rem', background: '#F4EEFF', color: '#424874' }} />
                     </form>
                 )}
 
@@ -203,7 +200,7 @@ const Sidebar = ({
                                         right: '10px',
                                         background: 'none',
                                         border: 'none',
-                                        color: '#e74c3c',
+                                        color: '#424874',
                                         cursor: 'pointer',
                                         padding: '4px',
                                         display: 'flex',

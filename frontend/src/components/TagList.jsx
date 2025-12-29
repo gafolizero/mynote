@@ -36,12 +36,12 @@ const TagList = ({ activeTagId, onTagSelect }) => {
     return (
         <div style={{ marginTop: '30px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 10px', marginBottom: '10px' }}>
-                <h3 style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#888', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <h3 style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#8B96C7', textTransform: 'uppercase', letterSpacing: '1px' }}>
                     Tags
                 </h3>
                 <button
                     onClick={() => setIsCreating(!isCreating)}
-                    style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}
+                    style={{ background: 'none', border: 'none', color: '#8B96C7', cursor: 'pointer' }}
                 >
                     {isCreating ? <X size={14} /> : <Plus size={14} />}
                 </button>
@@ -57,10 +57,10 @@ const TagList = ({ activeTagId, onTagSelect }) => {
                         style={{
                             width: '100%',
                             padding: '6px 10px',
-                            background: '#222',
-                            border: '1px solid #444',
+                            background: '#F4EEFF',
+                            border: '1px solid #DCD6F7',
                             borderRadius: '4px',
-                            color: 'white',
+                            color: '#424874',
                             fontSize: '0.8rem',
                             outline: 'none'
                         }}
@@ -84,11 +84,11 @@ const TagList = ({ activeTagId, onTagSelect }) => {
                             cursor: 'pointer',
                             textAlign: 'left',
                             transition: 'all 0.2s',
-                            background: activeTagId === tag.id ? 'rgba(52, 152, 219, 0.15)' : 'transparent',
-                            color: activeTagId === tag.id ? '#3498db' : '#aaa',
+                            background: activeTagId === tag.id ? '#DCD6F7' : 'transparent',
+                            color: activeTagId === tag.id ? '#424874' : '#8B96C7',
                         }}
                     >
-                        <Hash size={14} style={{ marginRight: '10px', opacity: 0.5 }} />
+                        <Hash size={14} style={{ marginRight: '10px', opacity: 0.6 }} />
                         {tag.name}
                     </button>
                 ))}

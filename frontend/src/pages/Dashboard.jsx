@@ -62,14 +62,14 @@ const Dashboard = () => {
                     <div style={styles.headerActions}>
                         <div style={styles.sortContainer}>
                             <div style={styles.iconWrapper}>
-                                <ArrowUpDown size={14} color="#6366f1" strokeWidth={2.5} />
+                                <ArrowUpDown size={14} color="#424874" strokeWidth={2.5} />
                             </div>
                             <div style={styles.selectWrapper}>
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
                                     style={styles.select}
-                                    onFocus={(e) => e.currentTarget.parentElement.parentElement.style.boxShadow = '0 2px 8px rgba(99, 102, 241, 0.15)'}
+                                    onFocus={(e) => e.currentTarget.parentElement.parentElement.style.boxShadow = '0 2px 8px rgba(220, 214, 247, 0.4)'}
                                     onBlur={(e) => e.currentTarget.parentElement.parentElement.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)'}
                                 >
                                     <option value="updated_at">Modified</option>
@@ -83,7 +83,7 @@ const Dashboard = () => {
                                 onClick={() => setSortOrder(sortOrder === 'ASC' ? 'DESC' : 'ASC')}
                                 style={styles.toggleButton}
                                 title="Toggle Sort Order"
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#DCD6F7'}
                                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                             >
                                 {sortOrder === 'ASC' ? <SortAsc size={18} /> : <SortDesc size={18} />}
@@ -136,7 +136,7 @@ const styles = {
         display: 'flex',
         height: '100vh',
         fontFamily: "'Inter', sans-serif",
-        background: '#f8fafc',
+        background: '#F4EEFF',
         overflow: 'hidden'
     },
     mainContent: {
@@ -164,18 +164,19 @@ const styles = {
         left: '14px',
         top: '50%',
         transform: 'translateY(-50%)',
-        color: '#94a3b8'
+        color: '#8B96C7'
     },
     searchInput: {
         width: '100%',
         padding: '12px 16px 12px 44px',
         borderRadius: '12px',
-        border: '1px solid #e2e8f0',
-        background: '#fff',
+        border: '1px solid #DCD6F7',
+        background: '#F4EEFF',
         fontSize: '14px',
         outline: 'none',
-        boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
-        transition: 'border-color 0.2s'
+        boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+        transition: 'border-color 0.2s',
+        color: '#424874'
     },
     headerActions: {
         display: 'flex',
@@ -186,9 +187,9 @@ const styles = {
     sortContainer: {
         display: 'flex',
         alignItems: 'center',
-        background: '#fff',
+        background: '#F4EEFF',
         borderRadius: '10px',
-        border: '1px solid #e2e8f0',
+        border: '1px solid #DCD6F7',
         padding: '4px',
         boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
         minWidth: 'fit-content',
@@ -217,7 +218,7 @@ const styles = {
         cursor: 'pointer',
         fontSize: '13px',
         fontWeight: '600',
-        color: '#475569',
+        color: '#424874',
         minWidth: '100px',
         width: '100%'
     },
@@ -225,14 +226,14 @@ const styles = {
         position: 'absolute',
         right: '8px',
         pointerEvents: 'none',
-        color: '#94a3b8',
+        color: '#8B96C7',
         top: '50%',
         transform: 'translateY(-50%)'
     },
     separator: {
         width: '1px',
         height: '20px',
-        background: '#e2e8f0',
+        background: '#DCD6F7',
         margin: '0 4px',
         flexShrink: 0
     },
@@ -244,15 +245,15 @@ const styles = {
         border: 'none',
         background: 'transparent',
         cursor: 'pointer',
-        color: '#6366f1',
+        color: '#424874',
         borderRadius: '6px',
         transition: 'background-color 0.2s ease',
         minWidth: '32px',
         height: '32px'
     },
     newNoteBtn: {
-        background: '#6366f1',
-        color: 'white',
+        background: '#DCD6F7',
+        color: '#424874',
         border: 'none',
         padding: '10px 16px',
         borderRadius: '10px',
@@ -261,7 +262,7 @@ const styles = {
         alignItems: 'center',
         gap: '8px',
         fontWeight: '600',
-        boxShadow: '0 4px 6px -1px rgba(99, 102, 241, 0.2)',
+        boxShadow: '0 4px 6px -1px rgba(220, 214, 247, 0.4)',
         transition: 'all 0.2s ease',
         whiteSpace: 'nowrap',
         flexShrink: 0
@@ -271,15 +272,15 @@ const styles = {
         alignItems: 'center',
         gap: '12px',
         paddingLeft: '8px',
-        borderLeft: '1px solid #e2e8f0',
+        borderLeft: '1px solid #DCD6F7',
         flexShrink: 0
     },
     avatar: {
         width: '36px',
         height: '36px',
         borderRadius: '50%',
-        background: '#6366f1',
-        color: '#fff',
+        background: '#424874',
+        color: '#F4EEFF',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -287,7 +288,7 @@ const styles = {
         fontWeight: '700'
     },
     logoutBtn: {
-        color: '#94a3b8',
+        color: '#8B96C7',
         border: 'none',
         background: 'none',
         cursor: 'pointer',

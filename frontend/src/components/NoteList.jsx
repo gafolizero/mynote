@@ -74,13 +74,13 @@ const NoteList = ({ searchQuery, folderId, tagId, isArchived, sortBy, sortOrder,
                             ) : (
                                     <div style={{
                                         gridColumn: '1/-1', textAlign: 'center', padding: '80px 20px',
-                                        background: '#fff', borderRadius: '15px', border: '1px dashed #ddd'
+                                        background: '#F4EEFF', borderRadius: '15px', border: '1px dashed #DCD6F7'
                                     }}>
-                                        <div style={{ background: '#f9f9f9', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-                                            <FileText size={30} color="#ccc" />
+                                        <div style={{ background: '#DCD6F7', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                                            <FileText size={30} color="#8B96C7" />
                                         </div>
-                                        <h3 style={{ color: '#555', marginBottom: '10px' }}>No notes found</h3>
-                                        <p style={{ color: '#888', fontSize: '0.9rem' }}>
+                                        <h3 style={{ color: '#424874', marginBottom: '10px' }}>No notes found</h3>
+                                        <p style={{ color: '#8B96C7', fontSize: '0.9rem' }}>
                                             {isArchived
                                                 ? "Your archive is currently empty."
                                                 : "Start your journey by creating your first note!"}
@@ -110,10 +110,10 @@ const NoteList = ({ searchQuery, folderId, tagId, isArchived, sortBy, sortOrder,
                         style={{
                             padding: '10px 20px',
                             borderRadius: '8px',
-                            border: '1px solid #e2e8f0',
+                            border: '1px solid #DCD6F7',
                             cursor: page === 1 ? 'not-allowed' : 'pointer',
-                            background: page === 1 ? '#f1f5f9' : '#fff',
-                            color: page === 1 ? '#94a3b8' : '#475569',
+                            background: page === 1 ? '#A6B1E1' : '#F4EEFF',
+                            color: page === 1 ? '#F4EEFF' : '#424874',
                             fontWeight: '600',
                             fontSize: '14px',
                             transition: 'all 0.2s',
@@ -124,13 +124,13 @@ const NoteList = ({ searchQuery, folderId, tagId, isArchived, sortBy, sortOrder,
                     </button>
                     <div style={{
                         padding: '10px 20px',
-                        background: '#f8fafc',
+                        background: '#424874',
                         borderRadius: '8px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #424874',
                         minWidth: '100px',
                         textAlign: 'center'
                     }}>
-                        <span style={{ fontWeight: '600', color: '#475569', fontSize: '14px' }}>
+                        <span style={{ fontWeight: '600', color: '#F4EEFF', fontSize: '14px' }}>
                             Page {page}
                         </span>
                     </div>
@@ -143,10 +143,10 @@ const NoteList = ({ searchQuery, folderId, tagId, isArchived, sortBy, sortOrder,
                         style={{
                             padding: '10px 20px',
                             borderRadius: '8px',
-                            border: '1px solid #e2e8f0',
+                            border: '1px solid #DCD6F7',
                             cursor: !hasMore ? 'not-allowed' : 'pointer',
-                            background: !hasMore ? '#f1f5f9' : '#fff',
-                            color: !hasMore ? '#94a3b8' : '#475569',
+                            background: !hasMore ? '#A6B1E1' : '#F4EEFF',
+                            color: !hasMore ? '#F4EEFF' : '#424874',
                             fontWeight: '600',
                             fontSize: '14px',
                             transition: 'all 0.2s',

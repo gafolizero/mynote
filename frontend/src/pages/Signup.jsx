@@ -54,13 +54,40 @@ const Signup = () => {
         }
     };
 
+    const inputStyle = {
+        width: '100%',
+        padding: '10px',
+        marginTop: '5px',
+        boxSizing: 'border-box',
+        border: '1px solid #DCD6F7',
+        borderRadius: '8px',
+        background: '#F4EEFF',
+        color: '#424874',
+        outline: 'none'
+    };
+
+    const labelStyle = {
+        color: '#424874',
+        display: 'block',
+        marginBottom: '5px',
+        fontWeight: '500'
+    };
+
     return (
-        <div style={{ maxWidth: '400px', margin: '100px auto', padding: '20px', border: '1px solid #ddd', borderRadius: '8px' }}>
-            <h2>Create Account</h2>
-            <p style={{ color: '#666', marginBottom: '20px' }}>Join MyNote to start organizing your notes</p>
+        <div style={{ 
+            maxWidth: '400px', 
+            margin: '100px auto', 
+            padding: '30px', 
+            border: '1px solid #DCD6F7', 
+            borderRadius: '12px',
+            background: '#F4EEFF',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+        }}>
+            <h2 style={{ color: '#424874', marginBottom: '10px' }}>Create Account</h2>
+            <p style={{ color: '#8B96C7', marginBottom: '20px' }}>Join MyNote to start organizing your notes</p>
             <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: '15px' }}>
-                    <label>Username:</label>
+                    <label style={labelStyle}>Username:</label>
                     <input
                         type="text"
                         value={username}
@@ -68,41 +95,41 @@ const Signup = () => {
                         required
                         minLength={3}
                         maxLength={50}
-                        style={{ width: '100%', padding: '8px', marginTop: '5px', boxSizing: 'border-box' }}
+                        style={inputStyle}
                         placeholder="Enter your username"
                     />
                 </div>
                 <div style={{ marginBottom: '15px' }}>
-                    <label>Email:</label>
+                    <label style={labelStyle}>Email:</label>
                     <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        style={{ width: '100%', padding: '8px', marginTop: '5px', boxSizing: 'border-box' }}
+                        style={inputStyle}
                         placeholder="Enter your email"
                     />
                 </div>
                 <div style={{ marginBottom: '15px' }}>
-                    <label>Password:</label>
+                    <label style={labelStyle}>Password:</label>
                     <input
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         minLength={8}
-                        style={{ width: '100%', padding: '8px', marginTop: '5px', boxSizing: 'border-box' }}
+                        style={inputStyle}
                         placeholder="At least 8 characters"
                     />
                 </div>
                 <div style={{ marginBottom: '15px' }}>
-                    <label>Confirm Password:</label>
+                    <label style={labelStyle}>Confirm Password:</label>
                     <input
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
-                        style={{ width: '100%', padding: '8px', marginTop: '5px', boxSizing: 'border-box' }}
+                        style={inputStyle}
                         placeholder="Confirm your password"
                     />
                 </div>
@@ -111,21 +138,22 @@ const Signup = () => {
                     disabled={loading}
                     style={{ 
                         width: '100%', 
-                        padding: '10px', 
-                        background: loading ? '#ccc' : '#007bff', 
-                        color: 'white', 
+                        padding: '12px', 
+                        background: loading ? '#A6B1E1' : '#DCD6F7', 
+                        color: '#424874', 
                         border: 'none', 
-                        borderRadius: '4px', 
+                        borderRadius: '8px', 
                         cursor: loading ? 'not-allowed' : 'pointer',
                         fontSize: '16px',
-                        fontWeight: '500'
+                        fontWeight: '600',
+                        transition: 'all 0.2s'
                     }}
                 >
                     {loading ? 'Creating Account...' : 'Sign Up'}
                 </button>
             </form>
-            <div style={{ marginTop: '20px', textAlign: 'center', color: '#666' }}>
-                <p>Already have an account? <Link to="/login" style={{ color: '#007bff', textDecoration: 'none' }}>Login here</Link></p>
+            <div style={{ marginTop: '20px', textAlign: 'center', color: '#8B96C7' }}>
+                <p>Already have an account? <Link to="/login" style={{ color: '#424874', textDecoration: 'none', fontWeight: '500' }}>Login here</Link></p>
             </div>
         </div>
     );

@@ -94,8 +94,8 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
         }
     };
     return (
-        <div style={{ background: 'white', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', marginBottom: '30px', border: '1px solid #eee' }}>
-            <h3 style={{ marginBottom: '20px', fontSize: '1.1rem', color: '#333' }}>
+        <div style={{ background: '#F4EEFF', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', marginBottom: '30px', border: '1px solid #DCD6F7' }}>
+            <h3 style={{ marginBottom: '20px', fontSize: '1.1rem', color: '#424874' }}>
                 {noteToEdit ? 'Edit Note' : 'Create New Note'}
             </h3>
 
@@ -106,7 +106,7 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
-                    style={{ width: '100%', padding: '12px', marginBottom: '15px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none' }}
+                    style={{ width: '100%', padding: '12px', marginBottom: '15px', borderRadius: '8px', border: '1px solid #DCD6F7', outline: 'none', background: '#F4EEFF', color: '#424874' }}
                 />
 
                 <textarea
@@ -120,23 +120,24 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
                         padding: '12px',
                         marginBottom: '15px',
                         borderRadius: '8px',
-                        border: '1px solid #ddd',
+                        border: '1px solid #DCD6F7',
                         outline: 'none',
                         resize: 'none',
                         fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                         fontSize: '14px',
                         lineHeight: '1.5',
-                        color: '#1e293b'
+                        color: '#424874',
+                        background: '#F4EEFF'
                     }}
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '10px' }}>
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '5px' }}>Folder</label>
+                        <label style={{ display: 'block', fontSize: '0.8rem', color: '#8B96C7', marginBottom: '5px' }}>Folder</label>
                         <select
                             value={folderId}
                             onChange={(e) => setFolderId(e.target.value)}
-                            style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd' }}
+                            style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #DCD6F7', background: '#F4EEFF', color: '#424874' }}
                         >
                             <option value="">No Folder</option>
                             {folders.map(f => (
@@ -146,11 +147,11 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
                     </div>
 
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.8rem', color: '#888', marginBottom: '5px' }}>Add Tag</label>
+                        <label style={{ display: 'block', fontSize: '0.8rem', color: '#8B96C7', marginBottom: '5px' }}>Add Tag</label>
                         <select
                             onChange={handleTagChange}
                             defaultValue=""
-                            style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd' }}
+                            style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #DCD6F7', background: '#F4EEFF', color: '#424874' }}
                         >
                             <option value="" disabled>Choose tags...</option>
                             {allTags.map(t => (
@@ -165,19 +166,19 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
                         const tag = allTags.find(t => t.id === id);
                         if (!tag) return null;
                         return (
-                            <div key={id} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f0f4f8', color: '#3498db', padding: '4px 10px', borderRadius: '16px', fontSize: '0.8rem', fontWeight: '500', border: '1px solid #d1e3f3' }}>
+                            <div key={id} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#DCD6F7', color: '#424874', padding: '4px 10px', borderRadius: '16px', fontSize: '0.8rem', fontWeight: '500', border: '1px solid #A6B1E1' }}>
                                 <Hash size={12} /> {tag.name}
-                                <button type="button" onClick={() => removeTag(id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888' }}><X size={14} /></button>
+                                <button type="button" onClick={() => removeTag(id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#424874' }}><X size={14} /></button>
                             </div>
                         );
                     })}
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px' }}>
-                    <button type="submit" disabled={loading} style={{ background: '#3498db', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}>
+                    <button type="submit" disabled={loading} style={{ background: '#DCD6F7', color: '#424874', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}>
                         <Save size={18} style={{ marginRight: '8px' }} /> {loading ? 'Saving...' : 'Save Note'}
                     </button>
-                    <button type="button" onClick={onCancel} style={{ background: '#eee', color: '#666', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
+                    <button type="button" onClick={onCancel} style={{ background: '#A6B1E1', color: '#F4EEFF', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
                 </div>
             </form>
         </div>
