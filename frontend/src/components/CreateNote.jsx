@@ -99,7 +99,20 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     required
-                    style={{ width: '100%', height: '150px', padding: '12px', marginBottom: '15px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none', resize: 'none' }}
+                    style={{
+                        width: '100%',
+                        height: '150px',
+                        padding: '12px',
+                        marginBottom: '15px',
+                        borderRadius: '8px',
+                        border: '1px solid #ddd',
+                        outline: 'none',
+                        resize: 'none',
+                        fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.5',
+                        color: '#1e293b'
+                    }}
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '10px' }}>
