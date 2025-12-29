@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { X, Save, Hash } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
     const [title, setTitle] = useState(noteToEdit?.title || '');
@@ -12,6 +13,8 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
 
     const [allTags, setAllTags] = useState([]);
     const [selectedTagIds, setSelectedTagIds] = useState([]);
+
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         fetchFolders();
@@ -34,20 +37,27 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
             setFolderId('');
             setSelectedTagIds([]);
         }
+        setErrors({});
     }, [noteToEdit]);
 
     const fetchFolders = async () => {
         try {
             const res = await api.get('/folders');
             setFolders(res.data.data.folders || []);
-        } catch (err) { console.error(err); }
+        } catch (err) {
+            console.error('Error fetching folders:', err);
+            toast.error(err.response?.data?.message || 'Failed to load folders');
+        }
     };
 
     const fetchAllTags = async () => {
         try {
             const res = await api.get('/tags');
             setAllTags(res.data.data.tags || []);
-        } catch (err) { console.error(err); }
+        } catch (err) {
+            console.error('Error fetching tags:', err);
+            toast.error(err.response?.data?.message || 'Failed to load tags');
+        }
     };
 
     const handleTagChange = (e) => {
@@ -56,39 +66,95 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
             setSelectedTagIds([...selectedTagIds, val]);
         }
         e.target.value = "";
+        if (errors.tagIds) {
+            setErrors(prev => ({ ...prev, tagIds: null }));
+        }
     };
 
     const removeTag = (id) => {
         setSelectedTagIds(selectedTagIds.filter(tagId => tagId !== id));
     };
 
+    const validateForm = () => {
+        const newErrors = {};
+
+        const trimmedTitle = title.trim();
+        if (!trimmedTitle) {
+            newErrors.title = 'Title is required';
+        } else if (trimmedTitle.length > 255) {
+            newErrors.title = 'Title must not exceed 255 characters';
+        }
+
+        if (selectedTagIds && selectedTagIds.length > 0) {
+            const invalidTags = selectedTagIds.filter(id => !Number.isInteger(id) || id <= 0);
+            if (invalidTags.length > 0) {
+                newErrors.tagIds = 'Invalid tag selection';
+            }
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleTitleChange = (e) => {
+        const value = e.target.value;
+        setTitle(value);
+        if (errors.title) {
+            setErrors(prev => ({ ...prev, title: null }));
+        }
+        if (value.trim().length > 255) {
+            setErrors(prev => ({ ...prev, title: 'Title must not exceed 255 characters' }));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            toast.error('Please fix the errors in the form');
+            return;
+        }
+
         setLoading(true);
+        setErrors({});
 
         let sanitizedFolderId = null;
         if (folderId && folderId !== '' && folderId !== 'null') {
-            sanitizedFolderId = !isNaN(folderId) ? parseInt(folderId) : folderId;
+            sanitizedFolderId = !isNaN(folderId) ? parseInt(folderId) : null;
+            if (isNaN(sanitizedFolderId)) {
+                setLoading(false);
+                toast.error('Invalid folder selection');
+                return;
+            }
         }
 
         const noteData = {
-            title,
-            content,
+            title: title.trim(),
+            content: content || '',
             folder_id: sanitizedFolderId,
-            tagIds: selectedTagIds
+            tagIds: selectedTagIds.length > 0 ? selectedTagIds : undefined
         };
-
-        console.log("SENDING DATA TO BACKEND:", noteData);
 
         try {
             if (noteToEdit) {
                 await api.patch(`/notes/${noteToEdit.id}`, noteData);
+                toast.success('Note updated successfully');
             } else {
                 await api.post('/notes', noteData);
+                toast.success('Note created successfully');
             }
             onNoteCreated();
         } catch (err) {
-            console.error('SERVER ERROR DETAILS:', err.response?.data || err.message);
+            console.error('Error saving note:', err);
+            const errorMessage = err.response?.data?.message || 'Failed to save note. Please try again.';
+            toast.error(errorMessage);
+
+            if (err.response?.data?.message) {
+                const message = err.response.data.message;
+                if (message.includes('Title')) {
+                    setErrors(prev => ({ ...prev, title: message }));
+                }
+            }
         } finally {
             setLoading(false);
         }
@@ -100,20 +166,39 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
             </h3>
 
             <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Note Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '12px', marginBottom: '15px', borderRadius: '8px', border: '1px solid #DCD6F7', outline: 'none', background: '#F4EEFF', color: '#424874' }}
-                />
+                <div style={{ marginBottom: '15px' }}>
+                    <input
+                        type="text"
+                        placeholder="Note Title"
+                        value={title}
+                        onChange={handleTitleChange}
+                        maxLength={255}
+                        style={{
+                            width: '100%',
+                            padding: '12px',
+                            borderRadius: '8px',
+                            border: errors.title ? '1px solid #e74c3c' : '1px solid #DCD6F7',
+                            outline: 'none',
+                            background: '#F4EEFF',
+                            color: '#424874'
+                        }}
+                    />
+                    {errors.title && (
+                        <p style={{
+                            color: '#e74c3c',
+                            fontSize: '0.75rem',
+                            marginTop: '4px',
+                            marginBottom: 0
+                        }}>
+                            {errors.title}
+                        </p>
+                    )}
+                </div>
 
                 <textarea
                     placeholder="Write your note here..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    required
                     style={{
                         width: '100%',
                         height: '150px',

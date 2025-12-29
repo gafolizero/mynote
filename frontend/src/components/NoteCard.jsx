@@ -1,6 +1,7 @@
 import React from 'react';
 import api from '../services/api';
 import { Trash2, Edit, Pin, Hash, Archive, RotateCcw, Calendar } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const NoteCard = ({ note, onRefresh, onEdit }) => {
 
@@ -16,9 +17,11 @@ const NoteCard = ({ note, onRefresh, onEdit }) => {
         e.stopPropagation();
         try {
             await api.patch(`/notes/${note.id}`, { is_pinned: !note.is_pinned });
+            toast.success(note.is_pinned ? 'Note unpinned' : 'Note pinned');
             onRefresh();
         } catch (err) {
             console.error('Error toggling pin status:', err);
+            toast.error(err.response?.data?.message || 'Failed to update note');
         }
     };
 
@@ -26,21 +29,25 @@ const NoteCard = ({ note, onRefresh, onEdit }) => {
         e.stopPropagation();
         try {
             await api.patch(`/notes/${note.id}`, { is_archived: !note.is_archived });
+            toast.success(note.is_archived ? 'Note restored' : 'Note archived');
             onRefresh();
         } catch (err) {
             console.error('Error changing archive status:', err);
+            toast.error(err.response?.data?.message || 'Failed to update note');
         }
     };
 
     const handleDelete = async (e) => {
         e.stopPropagation();
-        const confirmMsg = note.is_archived ? 'Permanently delete this archived note?' : 'Move this note to trash?';
+        const confirmMsg = note.is_archived ? 'Permanently delete this archived note?' : 'Delete this note?';
         if (!window.confirm(confirmMsg)) return;
         try {
             await api.delete(`/notes/${note.id}`);
+            toast.success('Note deleted successfully');
             onRefresh();
         } catch (err) {
             console.error('Error deleting note:', err);
+            toast.error(err.response?.data?.message || 'Failed to delete note');
         }
     };
 

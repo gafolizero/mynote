@@ -25,6 +25,11 @@ api.interceptors.request.use( (config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        if (!error.response) {
+            toast.error('Network error. Please check your connection and try again.');
+            return Promise.reject(error);
+        }
+
         if (error.response?.status === 401) {
             const currentPath = window.location.pathname;
             if (currentPath !== '/login' && currentPath !== '/signup') {
@@ -40,6 +45,7 @@ api.interceptors.response.use(
                 }, 500);
             }
         }
+
         return Promise.reject(error);
     }
 );
