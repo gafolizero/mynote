@@ -4,7 +4,7 @@ import NoteCard from './NoteCard';
 import SkeletonCard from './SkeletonCard';
 import { FileText } from 'lucide-react';
 
-const NoteList = ({ searchQuery, folderId, tagId, isArchived, onEditNote }) => {
+const NoteList = ({ searchQuery, folderId, tagId, isArchived, sortBy, sortOrder, onEditNote }) => {
     const [notes, setNotes] = useState([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -30,6 +30,14 @@ const NoteList = ({ searchQuery, folderId, tagId, isArchived, onEditNote }) => {
                 params.append('folder_id', folderId);
             }
 
+            if (sortBy) {
+                params.append('sortBy', sortBy);
+            }
+
+            if (sortOrder) {
+                params.append('sortOrder', sortOrder);
+            }
+
             const response = await api.get(`/notes?${params.toString()}`);
             setNotes(response.data.data.notes || []);
         } catch (err) {
@@ -37,9 +45,9 @@ const NoteList = ({ searchQuery, folderId, tagId, isArchived, onEditNote }) => {
         } finally {
             setLoading(false);
         }
-    }, [page, searchQuery, folderId, tagId, isArchived]);
+    }, [page, searchQuery, folderId, tagId, isArchived, sortBy, sortOrder]);
 
-    useEffect(() => { setPage(1); }, [searchQuery, folderId, tagId, isArchived]);
+    useEffect(() => { setPage(1); }, [searchQuery, folderId, tagId, isArchived, sortBy, sortOrder]);
     useEffect(() => { fetchNotes(); }, [fetchNotes]);
 
     return (

@@ -7,7 +7,17 @@ class NoteService {
     }
 
     async getAllNotes(userId, filters) {
-        return await noteRepo.findAll(userId, filters);
+        return await noteRepo.findAll(userId, {
+            folder_id: filters.folder_id,
+            isPinned: filters.isPinned,
+            isArchived: filters.isArchived,
+            search: filters.search,
+            tagId: filters.tagId,
+            page: filters.page,
+            limit: filters.limit,
+            sortBy: filters.sortBy,
+            sortOrder: filters.sortOrder
+        });
     }
 
     async getNote(id, userId) {

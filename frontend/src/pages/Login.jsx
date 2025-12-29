@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
@@ -59,6 +59,9 @@ const Login = () => {
                     Login
                 </button>
             </form>
+            <div style={{ marginTop: '20px', textAlign: 'center', color: '#666' }}>
+                <p>Don't have an account? <Link to="/signup" style={{ color: '#007bff', textDecoration: 'none' }}>Sign up here</Link></p>
+            </div>
         </div>
     );
 };

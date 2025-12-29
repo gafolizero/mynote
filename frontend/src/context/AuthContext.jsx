@@ -14,6 +14,18 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
+    useEffect(() => {
+        const handleLogout = (event) => {
+            const reason = event.detail?.reason || 'session_expired';
+            setUser(null);
+        };
+
+        window.addEventListener('auth:logout', handleLogout);
+        return () => {
+            window.removeEventListener('auth:logout', handleLogout);
+        };
+    }, []);
+
     const login = (userData, token) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(userData));
