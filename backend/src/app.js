@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./middleware/error.middleware');
@@ -25,13 +27,23 @@ app.use(cors({
 
 app.use(express.json());
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'MyNote API Documentation',
+    customfavIcon: '/favicon.ico'
+}));
+
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/folders', folderRoutes);
 app.use('/api/v1/notes', noteRoutes);
 app.use('/api/v1/tags', tagRoutes);
 
 app.get('/', (req, res) => {
-    res.status(200).json({ message: 'Note API is running' });
+    res.status(200).json({
+        message: 'MyNote API is running',
+        documentation: '/api-docs',
+        version: '1.0.0'
+    });
 });
 
 app.use((req, res, next) => {
