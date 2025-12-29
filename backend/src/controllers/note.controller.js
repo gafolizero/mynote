@@ -9,28 +9,19 @@ exports.createNote = async (req, res, next) => {
 
 exports.getAllNotes = async (req, res, next) => {
     try {
-        const { folderId, isPinned, isArchived, search, tagId, page, limit } = req.query;
-
-        const filters = {
-            folderId: folderId ? parseInt(folderId) : null,
-            tagId: tagId ? parseInt(tagId) : null,
-            search: search || '',
-            page: parseInt(page) || 1,
-            limit: parseInt(limit) || 10,
-            isPinned: isPinned === 'true' ? true : isPinned === 'false' ? false : undefined,
-            isArchived: isArchived === 'true' ? true : isArchived === 'false' ? false : false,
-        };
-
-        const notes = await noteService.getAllNotes(req.user.id, filters);
-
-        res.status(200).json({
-            status: 'success',
-            results: notes.length,
-            data: { notes }
+        const notes = await noteService.getAllNotes(req.user.id, {
+            folder_id: req.query.folder_id,
+            tagId: req.query.tagId,
+            search: req.query.search,
+            page: req.query.page,
+            limit: req.query.limit,
+            isArchived: req.query.isArchived,
+            sortBy: req.query.sortBy,
+            sortOrder: req.query.sortOrder
         });
-    } catch (err) {
-        next(err);
-    }
+
+        res.status(200).json({ status: 'success', data: { notes } });
+    } catch (err) { next(err); }
 };
 
 exports.getNote = async (req, res, next) => {
