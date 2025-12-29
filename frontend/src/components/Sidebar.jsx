@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
-import { Folder, Plus, X, Inbox, LayoutGrid, Archive } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Folder, Plus, X, Inbox, LayoutGrid, Archive, Trash2 } from 'lucide-react';
 import TagList from './TagList';
 
 const Sidebar = ({
@@ -33,7 +34,33 @@ const Sidebar = ({
             setNewFolderName('');
             setIsCreating(false);
             fetchFolders();
-        } catch (err) { console.error('Error creating folder:', err); }
+            toast.success('Folder created successfully');
+        } catch (err) {
+            console.error('Error creating folder:', err);
+            toast.error(err.response?.data?.message || 'Failed to create folder');
+        }
+    };
+
+    const handleDeleteFolder = async (folderId, folderName, e) => {
+        e.stopPropagation();
+
+        if (!window.confirm(`Are you sure you want to delete "${folderName}"? Notes in this folder will be moved to unorganized.`)) {
+            return;
+        }
+
+        try {
+            await api.delete(`/folders/${folderId}`);
+
+            if (selectedFolderId === folderId) {
+                onFolderSelect(null);
+            }
+
+            fetchFolders();
+            toast.success('Folder deleted successfully');
+        } catch (err) {
+            console.error('Error deleting folder:', err);
+            toast.error(err.response?.data?.message || 'Failed to delete folder');
+        }
     };
 
     const btnStyle = (isActive) => ({
@@ -84,11 +111,56 @@ const Sidebar = ({
             )}
 
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '30px' }}>
-                {folders.map(folder => (
-                    <button key={folder.id} onClick={() => onFolderSelect(folder.id)} style={btnStyle(!showArchived && selectedFolderId === folder.id)}>
-                        <Folder size={18} style={{ opacity: 0.7 }} /> {folder.name}
-                    </button>
-                ))}
+                {folders.map(folder => {
+                    const isActive = !showArchived && selectedFolderId === folder.id;
+                    return (
+                        <div
+                            key={folder.id}
+                            style={{
+                                position: 'relative',
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginBottom: '4px'
+                            }}
+                            onMouseEnter={(e) => {
+                                const deleteBtn = e.currentTarget.querySelector('.delete-btn');
+                                if (deleteBtn) deleteBtn.style.opacity = '1';
+                            }}
+                            onMouseLeave={(e) => {
+                                const deleteBtn = e.currentTarget.querySelector('.delete-btn');
+                                if (deleteBtn) deleteBtn.style.opacity = '0';
+                            }}
+                        >
+                            <button
+                                onClick={() => onFolderSelect(folder.id)}
+                                style={btnStyle(isActive)}
+                            >
+                                <Folder size={18} style={{ opacity: 0.7 }} /> {folder.name}
+                            </button>
+                            <button
+                                className="delete-btn"
+                                onClick={(e) => handleDeleteFolder(folder.id, folder.name, e)}
+                                style={{
+                                    position: 'absolute',
+                                    right: '10px',
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#e74c3c',
+                                    cursor: 'pointer',
+                                    padding: '4px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    opacity: '0',
+                                    transition: 'opacity 0.2s',
+                                    borderRadius: '4px'
+                                }}
+                                title="Delete folder"
+                            >
+                                <Trash2 size={14} />
+                            </button>
+                        </div>
+                    );
+                })}
             </nav>
 
             <TagList activeTagId={selectedTagId} onTagSelect={(id) => { onTagSelect(id); onToggleArchive(false); }} />
