@@ -5,6 +5,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 
 const AppError = require('./utils/appError');
+const logger = require('./utils/logger');
 const globalErrorHandler = require('./middleware/error.middleware');
 const authRoutes = require('./routes/auth.routes');
 const folderRoutes = require('./routes/folder.routes');
@@ -14,9 +15,9 @@ const tagRoutes =  require('./routes/tag.routes');
 const app = express();
 
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+    app.use(morgan('dev', { stream: logger.stream }));
 } else {
-    app.use(morgan('combined'));
+    app.use(morgan('combined', { stream: logger.stream }));
 }
 
 app.use(cors({

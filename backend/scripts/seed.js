@@ -1,9 +1,10 @@
 const pool = require('../config/db');
+const logger = require('../src/utils/logger');
 
 const seedData = async () => {
     const client = await pool.connect();
     try {
-        console.log('clearing all table');
+        logger.info('Clearing all tables');
         await client.query('DELETE FROM note_tags');
         await client.query('DELETE FROM notes');
         await client.query('DELETE FROM tags');
@@ -11,7 +12,7 @@ const seedData = async () => {
 
         const userId = 1;
 
-        console.log('inserting folders');
+        logger.info('Inserting folders');
         const folderRes = await client.query(`
 INSERT INTO folders (user_id, name, color) VALUES
 ($1, 'Engineering', '#2ecc71'),
@@ -22,7 +23,7 @@ RETURNING id, name
 `, [userId]);
         const [engId, markId, persId, finId] = folderRes.rows.map(r => r.id);
 
-        console.log('inserting tags');
+        logger.info('Inserting tags');
         const tagRes = await client.query(`
 INSERT INTO tags (user_id, name) VALUES
 ($1, 'Urgent'), ($1, 'Backlog'), ($1, 'React'),
@@ -54,7 +55,7 @@ RETURNING id, title
 
         const noteRows = notesRes.rows;
 
-        console.log('linking tags');
+        logger.info('Linking tags to notes');
         const links = [
             [noteRows[0].id, tags['Urgent']], [noteRows[0].id, tags['NodeJS']], // API Doc is Urgent & NodeJS
             [noteRows[1].id, tags['React']], [noteRows[1].id, tags['Verified']], // React Guide is React & Verified
@@ -67,9 +68,12 @@ RETURNING id, title
             await client.query('INSERT INTO note_tags (note_id, tag_id) VALUES ($1, $2)', [nId, tId]);
         }
 
-        console.log('seeding done');
+        logger.info('Database seeding completed successfully');
     } catch (err) {
-        console.error('seed error: ', err);
+        logger.error('Seed error', {
+            error: err.message,
+            stack: err.stack,
+        });
     } finally {
         client.release();
         await pool.end();

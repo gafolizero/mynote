@@ -1,3 +1,5 @@
+const logger = require('../utils/logger');
+
 module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
@@ -15,6 +17,26 @@ module.exports = (err, req, res, next) => {
     if (err.code === '23502') {
         err.statusCode = 400;
         err.message = 'Required field is missing';
+    }
+
+    const logData = {
+        statusCode: err.statusCode,
+        status: err.status,
+        message: err.message,
+        path: req.originalUrl,
+        method: req.method,
+        ip: req.ip,
+        user: req.user ? req.user.id : 'anonymous',
+    };
+
+    if (err.statusCode >= 500) {
+        logger.error('Server Error', {
+            ...logData,
+            stack: err.stack,
+            error: err,
+        });
+    } else {
+        logger.warn('Client Error', logData);
     }
 
     if (process.env.NODE_ENV === 'development') {
