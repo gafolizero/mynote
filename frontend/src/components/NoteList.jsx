@@ -10,7 +10,7 @@ const NoteList = ({ searchQuery, folderId, tagId, isArchived, sortBy, sortOrder,
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(false);
-    const limit = 9;
+    const limit = 6;
 
     const fetchNotes = useCallback(async () => {
         setLoading(true);
