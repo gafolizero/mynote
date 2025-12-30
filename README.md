@@ -355,14 +355,30 @@ git clone https://github.com/gafolizero/mynote.git
    ```bash
    node scripts/seed.js
    ```
+   6. **Seed database with sample data** (optional):
+   ```bash
+   node scripts/seed.js
+   ```
+   After seeding, you can either log in with a default user for testing or sign up to create a new account.
+   
+   *Default User*:
+   
+   Email
+   ```bash
+   jimi@gmail.com
+   ```
+   Password
+   ```bash
+   jimi1234
+   ```
 
-7. **Start the server**:
+8. **Start the server**:
    ```bash
    npm start
    ```
    The server will run on `http://localhost:8080`
 
-8. **Access API documentation**:
+9. **Access API documentation**:
    - Swagger UI: `http://localhost:8080/api-docs`
 
 ### Frontend Setup
@@ -391,13 +407,6 @@ cd backend
 npm test              # Run all tests
 npm run test:watch    # Run tests in watch mode
 ```
-
-**Frontend tests**:
-```bash
-cd frontend
-npm test              # Run tests
-```
-
 ---
 
 ## Assumptions Made
