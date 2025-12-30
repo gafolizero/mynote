@@ -12,11 +12,22 @@ const pool = new Pool({
     port: process.env.DB_PORT,
 });
 
+const logger = require('../src/utils/logger');
+
 pool.query('SELECT NOW()', (err, res) => {
     if (err) {
-        console.error('Database connection failed:', err.stack);
+        logger.error('Database connection failed', {
+            error: err.message,
+            stack: err.stack,
+            host: process.env.DB_HOST,
+            database: process.env.DB_NAME,
+        });
     } else {
-        console.log('Database connected successfully');
+        logger.info('Database connected successfully', {
+            host: process.env.DB_HOST,
+            database: process.env.DB_NAME,
+            port: process.env.DB_PORT,
+        });
     }
 });
 

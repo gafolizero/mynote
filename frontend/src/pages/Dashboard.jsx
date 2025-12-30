@@ -46,9 +46,8 @@ const Dashboard = () => {
                 refreshTrigger={refreshKey}
             />
 
-            <main style={styles.mainContent}>
+            <main className="custom-scrollbar" style={styles.mainContent}>
                 <header style={styles.header}>
-                    {/* Search Section */}
                     <div style={styles.searchWrapper}>
                         <Search size={18} style={styles.searchIcon} />
                         <input
@@ -60,18 +59,18 @@ const Dashboard = () => {
                         />
                     </div>
 
-                    {/* Actions Section */}
                     <div style={styles.headerActions}>
-                        {/* Sort Widget */}
                         <div style={styles.sortContainer}>
                             <div style={styles.iconWrapper}>
-                                <ArrowUpDown size={14} color="#6366f1" strokeWidth={2.5} />
+                                <ArrowUpDown size={14} color="#424874" strokeWidth={2.5} />
                             </div>
                             <div style={styles.selectWrapper}>
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
                                     style={styles.select}
+                                    onFocus={(e) => e.currentTarget.parentElement.parentElement.style.boxShadow = '0 2px 8px rgba(220, 214, 247, 0.4)'}
+                                    onBlur={(e) => e.currentTarget.parentElement.parentElement.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)'}
                                 >
                                     <option value="updated_at">Modified</option>
                                     <option value="created_at">Created</option>
@@ -84,20 +83,20 @@ const Dashboard = () => {
                                 onClick={() => setSortOrder(sortOrder === 'ASC' ? 'DESC' : 'ASC')}
                                 style={styles.toggleButton}
                                 title="Toggle Sort Order"
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#DCD6F7'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                             >
                                 {sortOrder === 'ASC' ? <SortAsc size={18} /> : <SortDesc size={18} />}
                             </button>
                         </div>
 
-                        {/* New Note Button */}
                         <button
                             onClick={() => { setIsCreating(true); setNoteToEdit(null); }}
                             style={styles.newNoteBtn}
                         >
-                            <Plus size={18}/> <span>New Note</span>
+                            <Plus size={18}/> <span style={{ whiteSpace: 'nowrap' }}>New Note</span>
                         </button>
 
-                        {/* User Profile & Logout */}
                         <div style={styles.userSection}>
                             <div style={styles.avatar}>
                                 {user?.username?.charAt(0).toUpperCase()}
@@ -132,29 +131,32 @@ const Dashboard = () => {
     );
 };
 
-// Modern Style Object
 const styles = {
     dashboardLayout: {
         display: 'flex',
-        minHeight: '100vh',
+        height: '100vh',
         fontFamily: "'Inter', sans-serif",
-        background: '#f8fafc'
+        background: '#F4EEFF',
+        overflow: 'hidden'
     },
     mainContent: {
         flex: 1,
-        padding: '32px',
-        overflowY: 'auto'
+        padding: '32px 32px 100px 32px',
+        overflowY: 'auto',
+        height: '100vh'
     },
     header: {
         display: 'flex',
+        flexWrap: 'wrap',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: '32px',
-        gap: '24px'
+        gap: '16px'
     },
     searchWrapper: {
         position: 'relative',
         flex: '1',
+        minWidth: '200px',
         maxWidth: '400px'
     },
     searchIcon: {
@@ -162,82 +164,123 @@ const styles = {
         left: '14px',
         top: '50%',
         transform: 'translateY(-50%)',
-        color: '#94a3b8'
+        color: '#8B96C7'
     },
     searchInput: {
         width: '100%',
         padding: '12px 16px 12px 44px',
         borderRadius: '12px',
-        border: '1px solid #e2e8f0',
-        background: '#fff',
+        border: '1px solid #DCD6F7',
+        background: '#F4EEFF',
         fontSize: '14px',
         outline: 'none',
-        boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
-        transition: 'border-color 0.2s'
+        boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+        transition: 'border-color 0.2s',
+        color: '#424874'
     },
     headerActions: {
         display: 'flex',
         alignItems: 'center',
-        gap: '16px'
+        gap: '12px',
+        flexWrap: 'wrap'
     },
     sortContainer: {
         display: 'flex',
         alignItems: 'center',
-        background: '#fff',
+        background: '#F4EEFF',
         borderRadius: '10px',
-        border: '1px solid #e2e8f0',
-        padding: '2px',
-        boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+        border: '1px solid #DCD6F7',
+        padding: '4px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+        minWidth: 'fit-content',
+        transition: 'all 0.2s ease'
     },
-    iconWrapper: { padding: '0 8px 0 10px' },
-    selectWrapper: { position: 'relative', display: 'flex', alignItems: 'center' },
+    iconWrapper: {
+        padding: '6px 8px 6px 10px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    selectWrapper: {
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        minWidth: '100px'
+    },
     select: {
         appearance: 'none',
-        padding: '8px 24px 8px 4px',
+        WebkitAppearance: 'none',
+        MozAppearance: 'none',
+        padding: '6px 28px 6px 8px',
         border: 'none',
         outline: 'none',
         background: 'transparent',
         cursor: 'pointer',
         fontSize: '13px',
         fontWeight: '600',
-        color: '#475569'
+        color: '#424874',
+        minWidth: '100px',
+        width: '100%'
     },
-    chevron: { position: 'absolute', right: '4px', pointerEvents: 'none', color: '#94a3b8' },
-    separator: { width: '1px', height: '18px', background: '#e2e8f0', margin: '0 4px' },
+    chevron: {
+        position: 'absolute',
+        right: '8px',
+        pointerEvents: 'none',
+        color: '#8B96C7',
+        top: '50%',
+        transform: 'translateY(-50%)'
+    },
+    separator: {
+        width: '1px',
+        height: '20px',
+        background: '#DCD6F7',
+        margin: '0 4px',
+        flexShrink: 0
+    },
     toggleButton: {
         display: 'flex',
-        padding: '8px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '6px 8px',
         border: 'none',
         background: 'transparent',
         cursor: 'pointer',
-        color: '#6366f1'
+        color: '#424874',
+        borderRadius: '6px',
+        transition: 'background-color 0.2s ease',
+        minWidth: '32px',
+        height: '32px'
     },
     newNoteBtn: {
-        background: '#6366f1',
-        color: 'white',
+        background: '#DCD6F7',
+        color: '#424874',
         border: 'none',
-        padding: '10px 20px',
+        padding: '10px 16px',
         borderRadius: '10px',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
         fontWeight: '600',
-        boxShadow: '0 4px 6px -1px rgba(99, 102, 241, 0.2)'
+        boxShadow: '0 4px 6px -1px rgba(220, 214, 247, 0.4)',
+        transition: 'all 0.2s ease',
+        whiteSpace: 'nowrap',
+        flexShrink: 0
     },
     userSection: {
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
         paddingLeft: '8px',
-        borderLeft: '1px solid #e2e8f0'
+        borderLeft: '1px solid #DCD6F7',
+        flexShrink: 0
     },
     avatar: {
         width: '36px',
         height: '36px',
         borderRadius: '50%',
-        background: '#6366f1',
-        color: '#fff',
+        background: '#424874',
+        color: '#F4EEFF',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -245,7 +288,7 @@ const styles = {
         fontWeight: '700'
     },
     logoutBtn: {
-        color: '#94a3b8',
+        color: '#8B96C7',
         border: 'none',
         background: 'none',
         cursor: 'pointer',

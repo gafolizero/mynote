@@ -1,9 +1,10 @@
 const pool = require('../config/db');
+const logger = require('../src/utils/logger');
 
 const initDb = async () => {
     const client = await pool.connect();
     try {
-        console.log('drop existing tables');
+        logger.info('Dropping existing tables');
         await client.query(`
             DROP TABLE IF EXISTS note_tags;
             DROP TABLE IF EXISTS tags;
@@ -12,7 +13,7 @@ const initDb = async () => {
             DROP TABLE IF EXISTS users;
         `);
 
-        console.log('create new tables');
+        logger.info('Creating new tables');
 
         const schema = `
             CREATE TABLE users (
@@ -58,10 +59,13 @@ const initDb = async () => {
             `;
 
         await client.query(schema);
-        console.log('database schema initialized');
+        logger.info('Database schema initialized successfully');
 
     } catch (err) {
-        console.error('error initializing schema', err.stack);
+        logger.error('Error initializing schema', {
+            error: err.message,
+            stack: err.stack,
+        });
     } finally {
         client.release();
         await pool.end();

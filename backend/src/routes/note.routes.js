@@ -2,7 +2,7 @@ const express = require('express');
 const noteController = require('../controllers/note.controller');
 const { protect } = require('../middleware/auth.middleware');
 const validate = require('../middleware/validate.middleware');
-const { noteSchema } = require('../utils/validators/note.validator');
+const { noteSchema, updateNoteSchema } = require('../utils/validators/note.validator');
 
 const router = express.Router();
 
@@ -269,7 +269,7 @@ router.route('/')
  */
 router.route('/:id')
     .get(noteController.getNote)
-    .patch(noteController.updateNote)
+    .patch(validate(updateNoteSchema), noteController.updateNote)
     .delete(noteController.deleteNote);
 
 module.exports = router;
