@@ -132,7 +132,7 @@ const CreateNote = ({ noteToEdit, onNoteCreated, onCancel }) => {
             title: title.trim(),
             content: content || '',
             folder_id: sanitizedFolderId,
-            tagIds: selectedTagIds.length > 0 ? selectedTagIds : undefined
+            tagIds: selectedTagIds
         };
 
         try {
