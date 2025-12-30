@@ -3,6 +3,7 @@ import api from '../services/api';
 import NoteCard from './NoteCard';
 import SkeletonCard from './SkeletonCard';
 import { FileText } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const NoteList = ({ searchQuery, folderId, tagId, isArchived, sortBy, sortOrder, onEditNote }) => {
     const [notes, setNotes] = useState([]);
@@ -48,6 +49,9 @@ const NoteList = ({ searchQuery, folderId, tagId, isArchived, sortBy, sortOrder,
             console.error('Error fetching notes:', err);
             setNotes([]);
             setHasMore(false);
+            if (err.response?.status !== 401) {
+                toast.error(err.response?.data?.message || 'Failed to load notes');
+            }
         } finally {
             setLoading(false);
         }

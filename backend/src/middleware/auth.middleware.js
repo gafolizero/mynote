@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const userRepo = require('../repositories/user.repo');
 const AppError = require('../utils/appError');
+const logger = require('../utils/logger');
 
 exports.protect = async (req, res, next) => {
     try {
@@ -10,6 +11,11 @@ exports.protect = async (req, res, next) => {
         }
 
         if (!token) {
+            logger.warn('Authentication failed: No token provided', {
+                path: req.originalUrl,
+                method: req.method,
+                ip: req.ip,
+            });
             return next(new AppError('You are not logged in!', 401));
         }
 
@@ -17,13 +23,30 @@ exports.protect = async (req, res, next) => {
         const currentUser = await userRepo.findById(decoded.id);
 
         if (!currentUser) {
+            logger.warn('Authentication failed: User not found', {
+                userId: decoded.id,
+                path: req.originalUrl,
+                method: req.method,
+                ip: req.ip,
+            });
             return next(new AppError('User no longer exists', 401));
         }
 
         req.user = currentUser;
+        logger.debug('Authentication successful', {
+            userId: currentUser.id,
+            path: req.originalUrl,
+            method: req.method,
+        });
 
         next();
     } catch (err) {
+        logger.warn('Authentication failed: Invalid or expired token', {
+            error: err.message,
+            path: req.originalUrl,
+            method: req.method,
+            ip: req.ip,
+        });
         next(new AppError('Invalid or expired token', 401));
     }
 };

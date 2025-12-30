@@ -4,7 +4,14 @@ const AppError = require('../utils/appError');
 
 class TagService {
     async createTag(userId, name) {
-        return await tagRepo.create(userId, name);
+        try {
+            return await tagRepo.create(userId, name);
+        } catch (error) {
+            if (error.code === '23505') {
+                throw new AppError('A tag with this name already exists', 400);
+            }
+            throw error;
+        }
     }
 
     async getTags(userId) {

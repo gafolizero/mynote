@@ -16,6 +16,7 @@ const Sidebar = ({
     const [folders, setFolders] = useState([]);
     const [isCreating, setIsCreating] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
+    const [folderError, setFolderError] = useState('');
 
     useEffect(() => { fetchFolders(); }, [refreshTrigger]);
 
@@ -23,21 +24,56 @@ const Sidebar = ({
         try {
             const response = await api.get('/folders');
             setFolders(response.data.data.folders);
-        } catch (err) { console.error('Error fetching folders:', err); }
+        } catch (err) {
+            console.error('Error fetching folders:', err);
+            toast.error(err.response?.data?.message || 'Failed to load folders');
+        }
+    };
+
+    const validateFolderName = (name) => {
+        const trimmed = name.trim();
+        if (!trimmed) {
+            return 'Folder name is required';
+        }
+        if (trimmed.length > 100) {
+            return 'Folder name must not exceed 100 characters';
+        }
+        return null;
+    };
+
+    const handleFolderNameChange = (e) => {
+        const value = e.target.value;
+        setNewFolderName(value);
+        setFolderError('');
+
+        if (value.trim().length > 100) {
+            setFolderError('Folder name must not exceed 100 characters');
+        }
     };
 
     const handleCreateFolder = async (e) => {
         e.preventDefault();
-        if (!newFolderName.trim()) return;
+        setFolderError('');
+
+        const error = validateFolderName(newFolderName);
+        if (error) {
+            setFolderError(error);
+            toast.error(error);
+            return;
+        }
+
         try {
-            await api.post('/folders', { name: newFolderName });
+            await api.post('/folders', { name: newFolderName.trim() });
             setNewFolderName('');
             setIsCreating(false);
+            setFolderError('');
             fetchFolders();
             toast.success('Folder created successfully');
         } catch (err) {
             console.error('Error creating folder:', err);
-            toast.error(err.response?.data?.message || 'Failed to create folder');
+            const errorMessage = err.response?.data?.message || 'Failed to create folder';
+            toast.error(errorMessage);
+            setFolderError(errorMessage);
         }
     };
 
@@ -160,8 +196,33 @@ const Sidebar = ({
 
                 {isCreating && (
                     <form onSubmit={handleCreateFolder} style={{ marginBottom: '15px', padding: '0 10px', flexShrink: 0 }}>
-                        <input autoFocus placeholder="Folder name..." value={newFolderName} onChange={(e) => setNewFolderName(e.target.value)}
-                            style={{ width: '100%', padding: '8px', border: '1px solid #DCD6F7', borderRadius: '6px', fontSize: '0.9rem', background: '#F4EEFF', color: '#424874' }} />
+                        <input
+                            autoFocus
+                            placeholder="Folder name..."
+                            value={newFolderName}
+                            onChange={handleFolderNameChange}
+                            maxLength={100}
+                            style={{
+                                width: '100%',
+                                padding: '8px',
+                                border: folderError ? '1px solid #e74c3c' : '1px solid #DCD6F7',
+                                borderRadius: '6px',
+                                fontSize: '0.9rem',
+                                background: '#F4EEFF',
+                                color: '#424874',
+                                outline: 'none'
+                            }}
+                        />
+                        {folderError && (
+                            <p style={{
+                                color: '#e74c3c',
+                                fontSize: '0.7rem',
+                                marginTop: '4px',
+                                marginBottom: 0
+                            }}>
+                                {folderError}
+                            </p>
+                        )}
                     </form>
                 )}
 
