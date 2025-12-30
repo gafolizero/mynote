@@ -355,7 +355,7 @@ git clone https://github.com/gafolizero/mynote.git
    ```bash
    node scripts/seed.js
    ```
-   After seeding, you can either log in with a default user for testing or sign up to create a new account.
+   You can either log in with a default user after seeding for testing or sign up to create a new account.
    
    Default User:
    
